@@ -798,6 +798,51 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="mm\mm_addfreechunk.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_calloc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_environment.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_free.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_mallinfo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_malloc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_memalign.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_realloc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_sem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_shrinkchunk.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_size2ndx.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_test.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mm\mm_zalloc.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sched\abort.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1485,6 +1530,7 @@
     <Folder Include="include\nuttx\lcd\" />
     <Folder Include="include\nuttx\usb\" />
     <Folder Include="include\sys\" />
+    <Folder Include="mm\" />
     <Folder Include="sched\" />
   </ItemGroup>
   <ItemGroup>
@@ -1582,6 +1628,12 @@
       <SubType>compile</SubType>
     </None>
     <None Include="include\cxx\ctime">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="mm\Makefile">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="mm\Makefile.test">
       <SubType>compile</SubType>
     </None>
     <None Include="sched\Makefile">
