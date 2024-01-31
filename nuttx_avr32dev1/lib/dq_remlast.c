@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * dq_remlast.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,46 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx_config.h>
-
-#include <net/ethernet.h>
+#include <queue.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Public Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
+/***************************************************(************************
+ * Name: dq_remlast
+ *
+ * Description:
+ *   dq_remlast removes the last entry from 'queue'
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+FAR dq_entry_t *dq_remlast(dq_queue_t *queue)
+{
+  FAR dq_entry_t *ret = queue->tail;
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  if (ret)
+    {
+      FAR dq_entry_t *prev = ret->blink;
+      if (!prev)
+        {
+          queue->head = NULL;
+          queue->tail = NULL;
+        }
+      else
+        {
+          queue->tail = prev;
+          prev->flink = NULL;
+        }
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+      ret->flink = NULL;
+      ret->blink = NULL;
+    }
 
-#undef EXTERN
-#ifdef __cplusplus
+  return ret;
 }
-#endif
 
-#endif /*   __NETINET_ETHER_H */

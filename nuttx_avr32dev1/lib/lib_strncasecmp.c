@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_strncasecmp.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,47 +31,40 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- ****************************************************************************/
+ *****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
+/****************************************************************************
+ * Compilation Switches
+ *****************************************************************************/
 
 /****************************************************************************
  * Included Files
- ****************************************************************************/
+ *****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <sys/types.h>
+#include <string.h>
+#include <ctype.h>
 
 /****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
+ * Global Functions
+ *****************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
+#ifndef CONFIG_ARCH_STRNCASECMP
+int strncasecmp(const char *cs, const char *ct, size_t nb)
+{
+  int result = 0;
+  for (; nb > 0; nb--)
+    {
+      if ((result = (int)toupper(*cs) - (int)toupper(*ct)) != 0 || !*cs)
+        {
+          break;
+        }
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+      cs++;
+      ct++;
+    }
+  return result;
 }
 #endif
-
-#endif /*   __NETINET_ETHER_H */

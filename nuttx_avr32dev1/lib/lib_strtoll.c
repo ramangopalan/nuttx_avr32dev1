@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib_strtoll.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,75 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include "lib_internal.h"
+
+#ifdef CONFIG_HAVE_LONG_LONG
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: strtoll
+ *
+ * Description:
+ *   The  strtol() function  converts  the initial part of the string in
+ *   nptr to a long long integer value according to the given base, which
+ *   must be between 2 and 36 inclusive, or be the special value 0.
+ *
+ * Warning: does not check for integer overflow!
+ *
  ****************************************************************************/
+ 
+long long strtoll(const char *nptr, char **endptr, int base)
+{
+  unsigned long long accum = 0;
+  bool negate = false;
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  if (nptr)
+    {
+      /* Skip leading spaces */
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+      lib_skipspace(&nptr);
 
-#undef EXTERN
-#ifdef __cplusplus
+      /* Check for leading + or - */
+
+      if (*nptr == '-')
+        {
+          negate = true;
+          nptr++;
+        }
+      else if (*nptr == '+')
+        {
+          nptr++;
+        }
+
+      /* Get the unsigned value */
+
+      accum = strtoull(nptr, endptr, base);
+
+      /* Correct the sign of the result */
+
+      if (negate)
+        {
+          return -(long long)accum;
+        }
+    }
+  return (long long)accum;
 }
+
 #endif
 
-#endif /*   __NETINET_ETHER_H */

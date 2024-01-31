@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib_strspn.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@
  *    notice, this list of conditions and the following disclaimer in
  *    the documentation and/or other materials provided with the
  *    distribution.
- * 3. Neither the name NuttX nor the names of its contributors may be
+ * 3. Neither the name Gregory Nutt nor the names of its contributors may be
  *    used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -33,45 +33,34 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
+/****************************************************************************
+ * Compilation Switches
+ ****************************************************************************/
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
-
-#include <net/ethernet.h>
+#include <sys/types.h>
+#include <string.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: strspn
+ *
+ * Description:
+ *  strspn() calculates the length of the initial segment of s which
+ *  consists entirely of characters in accept.
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+size_t strspn(const char *s, const char *accept)
+{
+  size_t i;
+  for (i = 0; s[i] && strchr(accept, s[i]) != NULL; i++);
+  return i;
 }
-#endif
-
-#endif /*   __NETINET_ETHER_H */

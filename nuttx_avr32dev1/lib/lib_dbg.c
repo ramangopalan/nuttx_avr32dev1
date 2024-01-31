@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_dbg.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,80 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <stdarg.h>
+#include <debug.h>
+
+#include "lib_internal.h"
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: dbg, lldbg, vdbg
+ *
+ * Description:
+ *  If the cross-compiler's pre-processor does not support variable
+ * length arguments, then these additional APIs will be built.
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+#ifndef CONFIG_CPP_HAVE_VARARGS
+#ifdef CONFIG_DEBUG
+int dbg(const char *format, ...)
+{
+  va_list ap;
+  int     ret;
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  va_start(ap, format);
+  ret = lib_rawvprintf(format, ap);
+  va_end(ap);
+  return ret;
+}
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+#ifdef CONFIG_ARCH_LOWPUTC
+int lldbg(const char *format, ...)
+{
+  va_list ap;
+  int     ret;
 
-#undef EXTERN
-#ifdef __cplusplus
+  va_start(ap, format);
+  ret = lib_lowvprintf(format, ap);
+  va_end(ap);
+  return ret;
 }
 #endif
 
-#endif /*   __NETINET_ETHER_H */
+#ifdef CONFIG_DEBUG_VERBOSE
+int vdbg(const char *format, ...)
+{
+  va_list ap;
+  int     ret;
+
+  va_start(ap, format);
+  ret = lib_rawvprintf(format, ap);
+  va_end(ap);
+  return ret;
+}
+
+#ifdef CONFIG_ARCH_LOWPUTC
+int llvdbg(const char *format, ...)
+{
+  va_list ap;
+  int     ret;
+
+  va_start(ap, format);
+  ret = lib_lowvprintf(format, ap);
+  va_end(ap);
+  return ret;
+}
+#endif /* CONFIG_ARCH_LOWPUTC */
+#endif /* CONFIG_DEBUG_VERBOSE */
+#endif /* CONFIG_DEBUG */
+#endif /* CONFIG_CPP_HAVE_VARARGS */

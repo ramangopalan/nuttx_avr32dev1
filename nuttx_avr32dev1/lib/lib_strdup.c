@@ -1,5 +1,5 @@
-/****************************************************************************
- * netinet/ether.h
+/************************************************************************
+ * lib/lib_strdup.c
  *
  *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -31,47 +31,31 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- ****************************************************************************/
+ ************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
-/****************************************************************************
+/************************************************************************
  * Included Files
- ****************************************************************************/
+ ************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <stdlib.h>
+#include <string.h>
 
-/****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
+/************************************************************************
+ * Global Functions
+ ************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+FAR char *strdup(const char *s)
+{
+  FAR char *news = NULL;
+  if (s)
+    {
+      news = (FAR char*)malloc(strlen(s) + 1);
+      if (news)
+        {
+          strcpy(news, s);
+        }
+    }
+  return news;
 }
-#endif
-
-#endif /*   __NETINET_ETHER_H */

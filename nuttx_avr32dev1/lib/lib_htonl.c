@@ -1,5 +1,5 @@
-/****************************************************************************
- * netinet/ether.h
+/************************************************************
+ * lib/lib_ntohl.c
  *
  *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -31,47 +31,38 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- ****************************************************************************/
+ ************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
-/****************************************************************************
+/************************************************************
  * Included Files
- ****************************************************************************/
+ ************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <stdint.h>
+#include <arpa/inet.h>
 
-/****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
+/************************************************************
+ * Global Functions
+ ************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
+uint32_t htonl(uint32_t hl)
+{
+#ifdef CONFIG_ENDIAN_BIG
+  return hl;
 #else
-#define EXTERN extern
+  return (( (hl) >> 24) |
+          (((hl) >>  8) & 0x0000ff00) |
+          (((hl) <<  8) & 0x00ff0000) |
+	  ( (hl) << 24));
 #endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
 }
-#endif
 
-#endif /*   __NETINET_ETHER_H */
+uint32_t ntohl(uint32_t nl)
+{
+#ifdef CONFIG_ENDIAN_BIG
+  return nl;
+#else
+  return htonl(nl);
+#endif
+}

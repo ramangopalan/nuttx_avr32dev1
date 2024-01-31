@@ -1,17 +1,17 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_strstr.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use str source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
+ * 2. Redistributions str binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer str
  *    the documentation and/or other materials provided with the
  *    distribution.
  * 3. Neither the name NuttX nor the names of its contributors may be
@@ -33,45 +33,72 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <string.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
+char *strstr(const char *str, const char *substr)
+{
+  const char *candidate;  /* Candidate in str with matching start character */
+  char         ch;        /* First character of the substring */
+  int          len;       /* The length of the substring */
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+  /* Special case the empty substring */
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  len = strlen(substr);
+  ch  = *substr;
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+  if (!ch)
+    {
+      /* We'll say that an empty substring matches at the beginning of
+       * the string
+       */
 
-#undef EXTERN
-#ifdef __cplusplus
+      return (char*)str;
+    }
+
+  /* Search for the substring */
+
+  candidate = str;
+  for (;;)
+    {
+      /* strchr() will return a pointer to the next occurrence of the
+       * character ch in the string
+       */
+
+      candidate = strchr(candidate, ch);
+      if (!candidate || strlen(candidate) < len)
+        {
+           /* First character of the substring does not appear in the string
+            * or the remainder of the string is not long enough to contain the
+            * substring.
+            */
+
+           return NULL;
+        }
+
+      /* Check if this is the beginning of a matching substring */
+
+      if (strncmp(candidate, substr, len) == 0)
+        {
+           return (char*)candidate;
+        }
+
+      /* No, find the next candidate after this one */
+
+      candidate++;
+    }
+
+  /* Won't get here, but some compilers might complain */
+
+  return NULL;
 }
-#endif
 
-#endif /*   __NETINET_ETHER_H */

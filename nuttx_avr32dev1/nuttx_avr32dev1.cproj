@@ -102,83 +102,83 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <Avr32Gcc>
-  <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
-  <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
-  <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
-  <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
-  <avr32gcc.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>DEBUG</Value>
-      <Value>__NuttX__</Value>
-      <Value>__KERNEL__</Value>
-    </ListValues>
-  </avr32gcc.compiler.symbols.DefSymbols>
-  <avr32gcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-      <Value>../include</Value>
-      <Value>../arch/avr/src/at32uc3</Value>
-      <Value>../include/nuttx</Value>
-    </ListValues>
-  </avr32gcc.compiler.directories.IncludePaths>
-  <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>
-  <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
-  <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
-  <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
-  <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
-  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.compiler.miscellaneous.OtherFlags>
-  <avr32gcc.linker.libraries.Libraries>
-    <ListValues>
-      <Value>libm</Value>
-    </ListValues>
-  </avr32gcc.linker.libraries.Libraries>
-  <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
-  <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
-  <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
-  <avr32gcc.assembler.general.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-    </ListValues>
-  </avr32gcc.assembler.general.IncludePaths>
-  <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
-  <avr32gcc.preprocessingassembler.general.AssemblerFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.preprocessingassembler.general.AssemblerFlags>
-  <avr32gcc.preprocessingassembler.general.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-      <Value>../include</Value>
-      <Value>../arch/avr/src/at32uc3</Value>
-      <Value>../include/nuttx</Value>
-    </ListValues>
-  </avr32gcc.preprocessingassembler.general.IncludePaths>
-  <avr32gcc.preprocessingassembler.symbols.DefSymbols>
-    <ListValues>
-      <Value>__ASSEMBLY__</Value>
-    </ListValues>
-  </avr32gcc.preprocessingassembler.symbols.DefSymbols>
-  <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
-</Avr32Gcc>
+        <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
+        <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
+        <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
+        <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
+        <avr32gcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+            <Value>__NuttX__</Value>
+            <Value>__KERNEL__</Value>
+          </ListValues>
+        </avr32gcc.compiler.symbols.DefSymbols>
+        <avr32gcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+            <Value>../include</Value>
+            <Value>../arch/avr/src/at32uc3</Value>
+            <Value>../include/nuttx</Value>
+          </ListValues>
+        </avr32gcc.compiler.directories.IncludePaths>
+        <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>
+        <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
+        <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
+        <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
+        <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
+        <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.compiler.miscellaneous.OtherFlags>
+        <avr32gcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avr32gcc.linker.libraries.Libraries>
+        <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
+        <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
+        <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
+        <avr32gcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+          </ListValues>
+        </avr32gcc.assembler.general.IncludePaths>
+        <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
+        <avr32gcc.preprocessingassembler.general.AssemblerFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.preprocessingassembler.general.AssemblerFlags>
+        <avr32gcc.preprocessingassembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+            <Value>../include</Value>
+            <Value>../arch/avr/src/at32uc3</Value>
+            <Value>../include/nuttx</Value>
+          </ListValues>
+        </avr32gcc.preprocessingassembler.general.IncludePaths>
+        <avr32gcc.preprocessingassembler.symbols.DefSymbols>
+          <ListValues>
+            <Value>__ASSEMBLY__</Value>
+          </ListValues>
+        </avr32gcc.preprocessingassembler.symbols.DefSymbols>
+        <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
+      </Avr32Gcc>
     </ToolchainSettings>
     <UsesExternalMakeFile>False</UsesExternalMakeFile>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
@@ -795,7 +795,403 @@
     <Compile Include="include\wdog.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="main.c">
+    <Compile Include="lib\dq_addafter.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_addbefore.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_addfirst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_addlast.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_rem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_remfirst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\dq_remlast.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_abs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_b16cos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_b16sin.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_basename.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_calendar2utc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_chdir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_checkbase.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_crc32.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_daysbeforemonth.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_dbg.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_dirname.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_dtoa.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_dumpbuffer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_etherntoa.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fclose.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fflush.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fgetc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fgetpos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fgets.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fileno.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_filesem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fixedmath.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fopen.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fputc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fputs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fread.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fseek.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fsetpos.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_ftell.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_fwrite.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_getcwd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_getopt.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_getoptargp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_getoptindp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_getoptoptp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_gets.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_gmtime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_gmtimer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_htonl.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_htons.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_imaxabs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_inetntoa.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_init.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_isbasedigit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_isleapyear.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_labs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libdtoa.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libfflush.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libflushall.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libfread.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libfwrite.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libsprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_libvsprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_llabs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_lowinstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_lowoutstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_lowprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_match.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_memcmp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_memcpy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_meminstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_memmove.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_memoutstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_memset.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_mktime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_nullinstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_nulloutstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_printf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_puts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_qsort.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rand.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rawinstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rawoutstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rawprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rdflush.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_rint.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_sem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_skipspace.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_snprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_sprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_sscanf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_stdinstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_stdoutstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strcasecmp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strcat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strchr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strcmp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strcpy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strcspn.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strdup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_streamsem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strerror.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strftime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strlen.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strncasecmp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strncat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strncmp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strncpy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strnlen.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strpbrk.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strrchr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strspn.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strstr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtod.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtok.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtokr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtoll.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtoul.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_strtoull.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_ungetc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_vfprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_vprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_vsnprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_vsprintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_wrflush.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\lib_zeroinstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_addafter.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_addfirst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_addlast.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_rem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_remafter.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_remfirst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\sq_remlast.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="mm\mm_addfreechunk.c">
@@ -1530,6 +1926,7 @@
     <Folder Include="include\nuttx\lcd\" />
     <Folder Include="include\nuttx\usb\" />
     <Folder Include="include\sys\" />
+    <Folder Include="lib\" />
     <Folder Include="mm\" />
     <Folder Include="sched\" />
   </ItemGroup>
@@ -1628,6 +2025,9 @@
       <SubType>compile</SubType>
     </None>
     <None Include="include\cxx\ctime">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="lib\Makefile">
       <SubType>compile</SubType>
     </None>
     <None Include="mm\Makefile">

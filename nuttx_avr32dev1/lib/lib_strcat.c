@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_strcat.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,30 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <string.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
+#ifndef CONFIG_ARCH_STRCAT
+char *strcat(char *dest, const char *src)
+{
+  char *ret   = dest;
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+  dest  += strlen(dest);
+  while (*src != '\0')
+    {
+      *dest++ = *src++;
+    }
+  *dest = '\0';
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+  return ret;
 }
 #endif
-
-#endif /*   __NETINET_ETHER_H */

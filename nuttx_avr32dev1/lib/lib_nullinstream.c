@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/in.h
+ * lib/lib_nullinstream.c
  *
- *   Copyright (C) 2007, 2009-2010 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,94 +33,46 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_IP_H
-#define __NETINET_IP_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx_config.h>
-
-#include <sys/types.h>
-#include <stdint.h>
+#include <stdio.h>
+#include <errno.h>
+#include "lib_internal.h"
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Private Functions
  ****************************************************************************/
 
-/* Values for protocol argument to socket() */
-
-#define IPPROTO_TCP           1
-#define IPPROTO_UDP           2
-
-/* Values used with SIOCSIFMCFILTER and SIOCGIFMCFILTER ioctl's */
-
-#define MCAST_EXCLUDE         0
-#define MCAST_INCLUDE         1
-
-/* Special values of in_addr_t */
-
-#define INADDR_ANY            ((in_addr_t)0x00000000) /* Address to accept any incoming messages */
-#define INADDR_BROADCAST      ((in_addr_t)0xffffffff) /* Address to send to all hosts */
-#define INADDR_NONE           ((in_addr_t)0xffffffff) /* Address indicating an error return */
-#define INADDR_LOOPBACK       ((in_addr_t)0x7f000001) /* Inet 127.0.0.1.  */
-
-/* Special initializer for in6_addr_t */
-
-#define IN6ADDR_ANY_INIT      {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}}
-#define IN6ADDR_LOOPBACK_INIT {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}}}
-
-/* struct in6_addr union selectors */
-
-#define s6_addr               in6_u.u6_addr8
-#define s6_addr16             in6_u.u6_addr16
-#define s6_addr32             in6_u.u6_addr32
+static int nullinstream_getc(FAR struct lib_instream_s *this)
+{
+  return EOF;
+}
 
 /****************************************************************************
- * Public Type Definitions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: lib_nullinstream
+ *
+ * Description:
+ *   Initializes a NULL stream. The initialized stream will  will return only
+ *   EOF.
+ *
+ * Input parameters:
+ *   nullinstream  - User allocated, uninitialized instance of struct
+ *                   lib_instream_s to be initialized.
+ *
+ * Returned Value:
+ *   None (User allocated instance initialized).
+ *
  ****************************************************************************/
 
-/* IPv4 Internet address */
-
-typedef uint32_t in_addr_t;
-struct in_addr
+void lib_nullinstream(FAR struct lib_instream_s *nullinstream)
 {
-  in_addr_t    s_addr;        /* Address (network byte order) */
-};
+  nullinstream->get  = nullinstream_getc;
+  nullinstream->nget = 0;
+}
 
-struct sockaddr_in
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in_addr sin_addr;    /* Internet address */
-};
-
-/* IPv6 Internet address */
-
-struct in6_addr
-{
-  union
-  {
-    uint8_t   u6_addr8[16];
-    uint16_t  u6_addr16[8];
-    uint32_t  u6_addr32[4];
-  } in6_u;
-};
-
-struct sockaddr_in6
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in6_addr sin6_addr;  /* IPv6 internet address */
-};
-
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#endif /* __NETINET_IP_H */

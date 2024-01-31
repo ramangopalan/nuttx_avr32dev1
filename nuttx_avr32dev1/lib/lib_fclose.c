@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_fclose.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,62 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <net/ethernet.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Public Type Definitions
- ****************************************************************************/
+int fclose(FAR FILE *stream)
+{
+  int ret = OK;
+  if (stream)
+    {
+      if (stream->fs_filedes > 0)
+        {
+          ret = close(stream->fs_filedes);
+        }
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+#if CONFIG_STDIO_BUFFER_SIZE > 0
+      /* Destroy the semaphore */
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
+      sem_destroy(&stream->fs_sem);
+
+      /* release the buffer */
+
+      if (stream->fs_bufstart)
+        {
+          free(stream->fs_bufstart);
+        }
+
+      /* Clear the whole structure */
+
+      memset(stream, 0, sizeof(FILE));
 #else
-#define EXTERN extern
+#if CONFIG_NUNGET_CHARS > 0
+      /* Reset the number of ungetc characters */
+
+      stream->fs_nungotten = 0;
 #endif
+      /* Reset the flags */
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+      stream->fs_oflags = 0;
+#endif
+      /* Setting the fs_filedescriptor to -1 makes the stream available for reuse */
 
-#undef EXTERN
-#ifdef __cplusplus
+      stream->fs_filedes = -1;
+    }
+
+  return ret;
 }
-#endif
 
-#endif /*   __NETINET_ETHER_H */

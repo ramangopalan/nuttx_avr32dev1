@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_etherntoa.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,37 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
+#include <stdio.h>
 
 #include <net/ethernet.h>
+#include <netinet/ether.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: ether_ntoa
+ *
+ * Description:
+ *   The ether_ntoa() function converts the Ethernet host address addr given
+ *   in network byte order to a string in standard hex-digits-and-colons
+ *   notation. The string is returned in a statically allocated buffer, which
+ *   subsequent calls will overwrite.
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+char *ether_ntoa(const struct ether_addr *addr)
+{
+  static char buffer[20];
+  sprintf(buffer, "%02x:%02x:%02x:%02x:%02x:%02x",
+          addr->ether_addr_octet[0], addr->ether_addr_octet[1],
+          addr->ether_addr_octet[2], addr->ether_addr_octet[3],
+          addr->ether_addr_octet[4], addr->ether_addr_octet[5]);
+  return buffer;
 }
-#endif
-
-#endif /*   __NETINET_ETHER_H */

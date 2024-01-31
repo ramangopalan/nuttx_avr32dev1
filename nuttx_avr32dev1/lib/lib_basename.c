@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/in.h
+ * lib/lib_basename.c
  *
- *   Copyright (C) 2007, 2009-2010 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,94 +33,99 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_IP_H
-#define __NETINET_IP_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <sys/types.h>
-#include <stdint.h>
+#include <string.h>
+#include <libgen.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Private Data
  ****************************************************************************/
 
-/* Values for protocol argument to socket() */
-
-#define IPPROTO_TCP           1
-#define IPPROTO_UDP           2
-
-/* Values used with SIOCSIFMCFILTER and SIOCGIFMCFILTER ioctl's */
-
-#define MCAST_EXCLUDE         0
-#define MCAST_INCLUDE         1
-
-/* Special values of in_addr_t */
-
-#define INADDR_ANY            ((in_addr_t)0x00000000) /* Address to accept any incoming messages */
-#define INADDR_BROADCAST      ((in_addr_t)0xffffffff) /* Address to send to all hosts */
-#define INADDR_NONE           ((in_addr_t)0xffffffff) /* Address indicating an error return */
-#define INADDR_LOOPBACK       ((in_addr_t)0x7f000001) /* Inet 127.0.0.1.  */
-
-/* Special initializer for in6_addr_t */
-
-#define IN6ADDR_ANY_INIT      {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}}
-#define IN6ADDR_LOOPBACK_INIT {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}}}
-
-/* struct in6_addr union selectors */
-
-#define s6_addr               in6_u.u6_addr8
-#define s6_addr16             in6_u.u6_addr16
-#define s6_addr32             in6_u.u6_addr32
+static char g_retchar[2];
 
 /****************************************************************************
- * Public Type Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Function: basename
+ *
+ * Description:
+ *   basename() extracts the filename component from a null-terminated
+ *   pathname string. In the usual case, basename() returns the component
+ *   following the final '/'. Trailing '/' characters are not counted as
+ *   part of the pathname.
+ *
+ *   If path does not contain a slash, basename() returns a copy of path.
+ *   If path is the string "/", then basename() returns the string "/". If
+ *   path is a NULL pointer or points to an empty string, then basename()
+ *   return the string ".".
+ *
+ *   basename() may modify the contents of path, so copies should be passed.
+ *   basename() may return pointers to statically allocated memory which may
+ *   be overwritten by subsequent calls.
+ *
+ * Parameter:
+ *   path The null-terminated string referring to the path to be decomposed
+ *
+ * Return:
+ *   On success the filename component of the path is returned.
+ *
  ****************************************************************************/
 
-/* IPv4 Internet address */
-
-typedef uint32_t in_addr_t;
-struct in_addr
+char *basename(char *path)
 {
-  in_addr_t    s_addr;        /* Address (network byte order) */
-};
+  char *p;
+  int   len;
+  int   ch;
 
-struct sockaddr_in
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in_addr sin_addr;    /* Internet address */
-};
+  /* Handle some corner cases */
 
-/* IPv6 Internet address */
+  if (!path || *path == '\0')
+    {
+      ch = '.';
+      goto out_retchar;
+    }
 
-struct in6_addr
-{
-  union
-  {
-    uint8_t   u6_addr8[16];
-    uint16_t  u6_addr16[8];
-    uint32_t  u6_addr32[4];
-  } in6_u;
-};
+  /* Check for trailing slash characters */
 
-struct sockaddr_in6
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in6_addr sin6_addr;  /* IPv6 internet address */
-};
+  len = strlen(path);
+  while (path[len-1] == '/')
+    {
+      /* Remove trailing '/' UNLESS this would make a zero length string */
+      if (len > 1)
+        {
+          path[len-1] = '\0';
+          len--;
+        }
+      else
+        {
+          ch = '/';
+          goto out_retchar;
+        }
+    }
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+  /* Get the address of the last '/' which is not at the end of the path and,
+   * therefor, must be just before the beginning of the filename component.
+   */
 
-#endif /* __NETINET_IP_H */
+  p = strrchr(path, '/');
+  if (p)
+    {
+      return p + 1;
+    }
+
+  /* There is no '/' in the path */
+
+  return path;
+
+out_retchar:
+  g_retchar[0] = ch;
+  g_retchar[1] = '\0';
+  return g_retchar;
+}

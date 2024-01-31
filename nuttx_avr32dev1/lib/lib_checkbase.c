@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/in.h
+ * lib/lib_checkbase.c
  *
- *   Copyright (C) 2007, 2009-2010 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,94 +33,83 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_IP_H
-#define __NETINET_IP_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <sys/types.h>
-#include <stdint.h>
+#include <string.h>
+#include <ctype.h>
+
+#include "lib_internal.h"
 
 /****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
-
-/* Values for protocol argument to socket() */
-
-#define IPPROTO_TCP           1
-#define IPPROTO_UDP           2
-
-/* Values used with SIOCSIFMCFILTER and SIOCGIFMCFILTER ioctl's */
-
-#define MCAST_EXCLUDE         0
-#define MCAST_INCLUDE         1
-
-/* Special values of in_addr_t */
-
-#define INADDR_ANY            ((in_addr_t)0x00000000) /* Address to accept any incoming messages */
-#define INADDR_BROADCAST      ((in_addr_t)0xffffffff) /* Address to send to all hosts */
-#define INADDR_NONE           ((in_addr_t)0xffffffff) /* Address indicating an error return */
-#define INADDR_LOOPBACK       ((in_addr_t)0x7f000001) /* Inet 127.0.0.1.  */
-
-/* Special initializer for in6_addr_t */
-
-#define IN6ADDR_ANY_INIT      {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}}
-#define IN6ADDR_LOOPBACK_INIT {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}}}
-
-/* struct in6_addr union selectors */
-
-#define s6_addr               in6_u.u6_addr8
-#define s6_addr16             in6_u.u6_addr16
-#define s6_addr32             in6_u.u6_addr32
-
-/****************************************************************************
- * Public Type Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Public Functions
  ****************************************************************************/
-
-/* IPv4 Internet address */
-
-typedef uint32_t in_addr_t;
-struct in_addr
-{
-  in_addr_t    s_addr;        /* Address (network byte order) */
-};
-
-struct sockaddr_in
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in_addr sin_addr;    /* Internet address */
-};
-
-/* IPv6 Internet address */
-
-struct in6_addr
-{
-  union
-  {
-    uint8_t   u6_addr8[16];
-    uint16_t  u6_addr16[8];
-    uint32_t  u6_addr32[4];
-  } in6_u;
-};
-
-struct sockaddr_in6
-{
-  sa_family_t sin_family;     /* Address family: AF_INET */
-  uint16_t    sin_port;       /* Port in network byte order */
-  struct in6_addr sin6_addr;  /* IPv6 internet address */
-};
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: lib_checkbase
+ *
+ * Description:
+ *   This is part of the strol() family implementation.  This function checks
+ *   the initial part of a string to see if it can determine the numeric
+ *   base that is represented.
+ *
+ * Assumptions:
+ *   *ptr points to the first, non-whitespace character in the string.
+ *
  ****************************************************************************/
+ 
+int lib_checkbase(int base, const char **pptr)
+{
+   const char *ptr = *pptr;
 
-#endif /* __NETINET_IP_H */
+  /* Check for unspecified base */
+
+  if (!base)
+    {
+      /* Assume base 10 */
+
+      base = 10;
+
+      /* Check for leading '0' - that would signify octal or hex (or binary) */
+
+      if (*ptr == '0')
+        {
+          /* Assume octal */
+
+          base = 8;
+          ptr++;
+
+          /* Check for hexidecimal */
+
+          if ((*ptr == 'X' || *ptr == 'x') && 
+              lib_isbasedigit(ptr[1], 16, NULL))
+            {
+              base = 16;
+              ptr++;
+            }
+        }
+    }
+
+  /* If it a hexidecimal representation, than discard any leading "0X" or "0x" */
+
+  else if (base == 16)
+    {
+      if (ptr[0] == '0' && (ptr[1] == 'X' || ptr[1] == 'x'))
+        {
+          ptr += 2;
+        }
+    }
+
+  /* Return the updated pointer and base */
+
+  *pptr = ptr;
+  return base;
+}
+

@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_b16sin.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,78 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx_config.h>
-
-#include <net/ethernet.h>
+#include <fixedmath.h>
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
+#define b16_P225       0x0000399a
+#define b16_P405284735 0x000067c1
+#define b16_1P27323954 0x000145f3
+
 /****************************************************************************
- * Public Type Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: b16sin
+ * Ref: http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
  ****************************************************************************/
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+b16_t b16sin(b16_t rad)
+{
+  b16_t tmp1;
+  b16_t tmp2;
+  b16_t tmp3;
 
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
+  /* Force angle into the good range */
 
-#undef EXTERN
-#ifdef __cplusplus
+  if (rad < -b16PI)
+    {
+      rad += b16TWOPI;
+    }
+  else if (rad > b16PI)
+   {
+      rad -= b16TWOPI;
+   }
+
+  /* tmp1 = 1.27323954 * rad
+   * tmp2 = .405284735 * rad * rad
+   */
+
+
+  tmp1 = b16mulb16(b16_1P27323954, rad);
+  tmp2 = b16mulb16(b16_P405284735, b16sqr(rad));
+
+  if (rad < 0)
+    {
+       /* tmp3 = 1.27323954 * rad + .405284735 * rad * rad */
+
+       tmp3 = tmp1 + tmp2;
+    }
+  else
+    {
+       /* tmp3 = 1.27323954 * rad - 0.405284735 * rad * rad */
+
+       tmp3 = tmp1 - tmp2;
+    }
+
+  /* tmp1 = tmp3*tmp3 */
+
+  tmp1 = b16sqr(tmp3);
+  if (tmp3 < 0)
+    {
+      /* tmp1 = tmp3 * -tmp3 */
+
+      tmp1 = -tmp1;
+    }
+
+  /* Return sin = .225 * (tmp3 * (+/-tmp3) - tmp3) + tmp3 */
+
+  return b16mulb16(b16_P225, (tmp1 - tmp3)) + tmp3;
 }
-#endif
-
-#endif /*   __NETINET_ETHER_H */

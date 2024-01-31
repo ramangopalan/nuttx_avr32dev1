@@ -1,5 +1,5 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/dq_addbefore.c
  *
  *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -14,7 +14,7 @@
  *    notice, this list of conditions and the following disclaimer in
  *    the documentation and/or other materials provided with the
  *    distribution.
- * 3. Neither the name NuttX nor the names of its contributors may be
+ * 3. Neither the name Gregory Nutt nor the names of its contributors may be
  *    used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -33,45 +33,37 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx_config.h>
-
-#include <net/ethernet.h>
+#include <queue.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: dq_addbefore
+ *
+ * Description:
+ *   dq_addbefore adds 'node' before 'next' in 'queue'
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+void dq_addbefore(FAR dq_entry_t *next, FAR dq_entry_t *node,
+                  dq_queue_t *queue)
+{
+  if (!queue->head || next == queue->head)
+    {
+      dq_addfirst(node, queue);
+    }
+  else
+    {
+      FAR dq_entry_t *prev = next->blink;
+      node->flink = next;
+      node->blink = prev;
+      prev->flink = node;
+      next->blink = node;
+    }
 }
-#endif
-
-#endif /*   __NETINET_ETHER_H */

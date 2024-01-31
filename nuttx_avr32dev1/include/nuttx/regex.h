@@ -41,8 +41,8 @@
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
-#include <nuttx/fs.h>
+#include <nuttx_config.h>
+#include <fs.h>
 
 /****************************************************************************
  * Pre-Processor Definitions

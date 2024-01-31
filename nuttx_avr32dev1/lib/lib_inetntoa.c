@@ -1,7 +1,7 @@
 /****************************************************************************
- * netinet/ether.h
+ * lib/lib_inetntoa.c
  *
- *   Copyright (C) 2007, 2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,44 @@
  *
  ****************************************************************************/
 
-#ifndef __NETINET_ETHER_H
-#define __NETINET_ETHER_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
-
-#include <net/ethernet.h>
+#include <stdio.h>
+#include <arpa/inet.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Type Definitions
+ * Name: inet_ntoa
+ *
+ * Description:
+ *   The inet_ntoa() function converts the Internet host address in given in
+ *   network byte order to a string in standard numbers-and-dots notation.
+ *   The string is returned in a statically allocated buffer, which subsequent
+ *   calls will overwrite.
+ *
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
+#ifdef CONFIG_CAN_PASS_STRUCTS
+FAR char *inet_ntoa(struct in_addr in)
+{
+  static char buffer[18];
+  FAR char *ptr = (FAR char*)&in.s_addr;
+  sprintf(buffer, "%d.%d.%d.%d", ptr[0], ptr[1], ptr[2], ptr[3]);
+  return buffer;
+}
 #else
-#define EXTERN extern
-#endif
-
-EXTERN char *ether_ntoa(const struct ether_addr *addr);
-EXTERN struct ether_addr *ether_aton(const char *asc);
-EXTERN int ether_ntohost(char *hostname, const struct ether_addr *addr);
-EXTERN int ether_hostton(const char *hostname, struct ether_addr *addr);
-EXTERN int ether_line(const char *line, struct ether_addr *addr, char *hostname);
-
-#undef EXTERN
-#ifdef __cplusplus
+FAR char *_inet_ntoa(in_addr_t in)
+{
+  static char buffer[18];
+  FAR char *ptr = (FAR char*)&in;
+  sprintf(buffer, "%d.%d.%d.%d", ptr[0], ptr[1], ptr[2], ptr[3]);
+  return buffer;
 }
 #endif
 
-#endif /*   __NETINET_ETHER_H */
