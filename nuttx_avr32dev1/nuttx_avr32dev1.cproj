@@ -1,0 +1,1592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC32.C</ToolchainName>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <avrdevice>AT32UC3B0256</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>nuttx_avr32dev1</AssemblyName>
+    <Name>nuttx_avr32dev1</Name>
+    <RootNamespace>nuttx_avr32dev1</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <EraseKey />
+    <AsfFrameworkConfig>
+      <framework-data xmlns="">
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.52.0" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <avrtoolserialnumber>J42700053627</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x0</avrdeviceexpectedsignature>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>7500000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700053627</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>7500000</avrtoolinterfaceclock>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <Avr32Gcc>
+        <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
+        <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
+        <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
+        <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
+        <avr32gcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avr32gcc.compiler.symbols.DefSymbols>
+        <avr32gcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+          </ListValues>
+        </avr32gcc.compiler.directories.IncludePaths>
+        <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
+        <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <avr32gcc.compiler.optimization.UseAssemblerForPseudoInstructions>True</avr32gcc.compiler.optimization.UseAssemblerForPseudoInstructions>
+        <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
+        <avr32gcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avr32gcc.linker.libraries.Libraries>
+        <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
+        <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
+        <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
+        <avr32gcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+          </ListValues>
+        </avr32gcc.assembler.general.IncludePaths>
+        <avr32gcc.preprocessingassembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+          </ListValues>
+        </avr32gcc.preprocessingassembler.general.IncludePaths>
+      </Avr32Gcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <Avr32Gcc>
+  <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
+  <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
+  <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
+  <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
+  <avr32gcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>DEBUG</Value>
+      <Value>__NuttX__</Value>
+      <Value>__KERNEL__</Value>
+    </ListValues>
+  </avr32gcc.compiler.symbols.DefSymbols>
+  <avr32gcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+      <Value>../configs/avr32dev1/include</Value>
+      <Value>../arch/avr/include</Value>
+      <Value>../arch/avr/include/at32uc3</Value>
+      <Value>../arch/avr/include/avr32</Value>
+      <Value>../arch/avr/src/common</Value>
+      <Value>../include/sys</Value>
+      <Value>../sched</Value>
+      <Value>../include</Value>
+      <Value>../arch/avr/src/at32uc3</Value>
+      <Value>../include/nuttx</Value>
+    </ListValues>
+  </avr32gcc.compiler.directories.IncludePaths>
+  <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>
+  <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
+  <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
+  <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
+  <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
+  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.compiler.miscellaneous.OtherFlags>
+  <avr32gcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </avr32gcc.linker.libraries.Libraries>
+  <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
+  <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
+  <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
+  <avr32gcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+      <Value>../configs/avr32dev1/include</Value>
+      <Value>../arch/avr/include</Value>
+      <Value>../arch/avr/include/at32uc3</Value>
+      <Value>../arch/avr/include/avr32</Value>
+      <Value>../arch/avr/src/common</Value>
+      <Value>../include/sys</Value>
+      <Value>../sched</Value>
+    </ListValues>
+  </avr32gcc.assembler.general.IncludePaths>
+  <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
+  <avr32gcc.preprocessingassembler.general.AssemblerFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.preprocessingassembler.general.AssemblerFlags>
+  <avr32gcc.preprocessingassembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+      <Value>../configs/avr32dev1/include</Value>
+      <Value>../arch/avr/include</Value>
+      <Value>../arch/avr/include/at32uc3</Value>
+      <Value>../arch/avr/include/avr32</Value>
+      <Value>../arch/avr/src/common</Value>
+      <Value>../include/sys</Value>
+      <Value>../sched</Value>
+      <Value>../include</Value>
+      <Value>../arch/avr/src/at32uc3</Value>
+      <Value>../include/nuttx</Value>
+    </ListValues>
+  </avr32gcc.preprocessingassembler.general.IncludePaths>
+  <avr32gcc.preprocessingassembler.symbols.DefSymbols>
+    <ListValues>
+      <Value>__ASSEMBLY__</Value>
+    </ListValues>
+  </avr32gcc.preprocessingassembler.symbols.DefSymbols>
+  <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
+</Avr32Gcc>
+    </ToolchainSettings>
+    <UsesExternalMakeFile>False</UsesExternalMakeFile>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <BuildTarget>all</BuildTarget>
+    <CleanTarget>clean</CleanTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="arch\avr\include\arch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\at32uc3\at32uc3_irq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\avr32\avr32.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\avr32\platform_avr32_irq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\avr32_irq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\avr32_limits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\include\avr32_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3a_pinmux.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3b_pinmux.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_abdac.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_adc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_clkinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_eic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_flashc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_gpio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_gpio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_gpioirq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_hmatrix.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_intc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_irq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_lowconsole.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_lowinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_memorymap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_pdca.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_pinmux.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_pm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_pwm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_rtc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_serial.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_ssc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_tc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_timerisr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_twi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_usart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_usbb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\at32uc3_wdt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\at32uc3\chip.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_assert.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_blocktask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_copystate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_doirq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_exceptions.S">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_fullcontextrestore.S">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_initialstate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_nommuhead.S">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_releasepending.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_reprioritizertr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_schedulesigaction.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_sigdeliver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_switchcontext.S">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\avr32\up_unblocktask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_allocateheap.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_arch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_createstack.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_exit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_idle.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_interruptcontext.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_lowputs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_mdelay.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_modifyreg16.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_modifyreg32.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_modifyreg8.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_puts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_releasestack.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_udelay.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="arch\avr\src\common\up_usestack.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="configs\avr32dev1\include\board.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="configs\avr32dev1\src\avr32dev1_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="configs\avr32dev1\src\up_boot.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="configs\avr32dev1\src\up_buttons.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="configs\avr32dev1\src\up_leds.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\apps.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\dhcpc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\dhcpd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\httpd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\ipmsfilter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\resolv.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\smtp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\telnetd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\tftp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\thttpd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\uiplib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\netutils\webclient.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\apps\nsh.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\arpa\inet.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\assert.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\crc32.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\ctype.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\debug.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\dirent.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\errno.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\fcntl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\fixedmath.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\inttypes.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libgen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\limits.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\math.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\mqueue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\netinet\arp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\netinet\ether.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\netinet\in.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\netinet\ip.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\netinet\ip6.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\ethernet.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\if.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\ioctls.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-arch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-arp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-icmp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-igmp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-ipopt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-tcp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip-udp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uip.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\net\uip\uipopt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nuttx_arch.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\binfmt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\can.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\clock.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\compiler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nuttx_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\cs89x0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\enc28j60.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\fat.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\fb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\fs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\i2c.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\init.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\ioctl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nuttx_irq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\kmalloc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\lcd\lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\lcd\nokia6100.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\lcd\p14201.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\lib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\mii.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\mkfatfs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\mm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\mmcsd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\mtd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\net.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nxflat.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nxfonts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nxglib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nxtk.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\page.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\ramdisk.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\regex.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\rgbcolors.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\rwbuffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\sched.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\scsi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\sdio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\nuttx_serial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\streams.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\symtab.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\time.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\uart_16550.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\hid.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\hid_parser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\ohci.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\storage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\usb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\usbdev.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\usbdev_trace.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\usbhost.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\usb\usbhost_trace.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nuttx\wqueue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\nxflat.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\poll.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\pthread.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\queue.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sched.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\semaphore.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\signal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\stdbool.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\stddef.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\stdint.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\stdio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\stdlib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\ioctl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\mman.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\mount.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\select.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\socket.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\sockio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\stat.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\statfs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\sys_time.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\vfs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\sys\wait.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\include_time.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\unistd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\wdog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\abort.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\atexit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_abstime2ticks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_getres.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_gettime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_gettimeofday.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_settime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_ticks2time.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\clock_time2ticks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_clearenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_dup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_dupenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_findvar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_getenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_getenvironptr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_putenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_release.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_removevar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_setenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_share.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\env_unsetenv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\exit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\getpid.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\get_errno_ptr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\irq_attach.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\irq_dispatch.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\irq_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\irq_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\irq_unexpectedisr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_close.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_descreate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_findnamed.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_getattr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_msgfree.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_msgqfree.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_notify.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_open.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_rcvinternal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_receive.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_send.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_setattr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_sndinternal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_timedreceive.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_timedsend.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_unlink.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\mq_waitirq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\os_bringup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\os_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\os_start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pg_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pg_miss.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pg_worker.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrgetinheritsched.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrgetschedparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrgetschedpolicy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrgetstacksize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrsetinheritsched.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrsetschedparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrsetschedpolicy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_attrsetstacksize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierattrdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierattrgetpshared.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierattrinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierattrsetpshared.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_barrierwait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_cancel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_completejoin.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condattrdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condattrinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condbroadcast.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_conddestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condsignal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condtimedwait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_condwait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_create.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_detach.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_exit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_findjoininfo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_getschedparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_getspecific.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_join.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_keycreate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_keydelete.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_kill.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrgetpshared.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrgettype.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrsetpshared.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexattrsettype.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexdestroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexinit.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexlock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutextrylock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_mutexunlock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_once.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_removejoininfo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_setcancelstate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_setschedparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_setschedprio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_setspecific.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_sigmask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\pthread_yield.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_addblocked.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_addprioritized.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_addreadytorun.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_foreach.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_free.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_garbage.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getfiles.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getprioritymax.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getprioritymin.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getscheduler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getsockets.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_getstreams.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_gettcb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_lock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_lockcount.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_mergepending.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_processtimer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_releasefiles.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_releasetcb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_removeblocked.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_removereadytorun.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_reprioritize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_rrgetinterval.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setparam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setpriority.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setscheduler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setupidlefiles.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setuppthreadfiles.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setupstreams.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_setuptaskfiles.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_unlock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_verifytcb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_waitpid.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sched_yield.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_close.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_destroy.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_findnamed.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_getvalue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_holder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_init.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_open.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_post.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_trywait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_unlink.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_wait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sem_waitirq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_action.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_addset.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_allocatependingsigaction.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_cleanup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_deliver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_delset.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_emptyset.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_fillset.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_findaction.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_ismember.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_kill.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_lowest.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_mqnotempty.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_pending.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_procmask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_queue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_received.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_releasependingsigaction.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_releasependingsignal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_removependingsignal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_suspend.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_timedwait.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_unmaskpendingsignal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sig_waitinfo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\sleep.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_activate.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_create.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_delete.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_deletecurrent.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_init.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_restart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_setup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\task_start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_create.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_delete.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_getoverrun.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_gettime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_release.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\timer_settime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\usleep.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_cancel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_create.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_delete.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_gettime.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_initialize.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\wd_start.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\work_cancel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\work_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\work_queue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sched\work_thread.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="arch\" />
+    <Folder Include="arch\avr\" />
+    <Folder Include="arch\avr\include\" />
+    <Folder Include="arch\avr\include\at32uc3\" />
+    <Folder Include="arch\avr\include\avr32\" />
+    <Folder Include="arch\avr\src\" />
+    <Folder Include="arch\avr\src\at32uc3\" />
+    <Folder Include="arch\avr\src\avr32\" />
+    <Folder Include="arch\avr\src\common\" />
+    <Folder Include="configs\" />
+    <Folder Include="configs\avr32dev1\" />
+    <Folder Include="configs\avr32dev1\include\" />
+    <Folder Include="configs\avr32dev1\nsh\" />
+    <Folder Include="configs\avr32dev1\ostest\" />
+    <Folder Include="configs\avr32dev1\src\" />
+    <Folder Include="configs\avr32dev1\tools\" />
+    <Folder Include="include\" />
+    <Folder Include="include\apps\" />
+    <Folder Include="include\apps\netutils\" />
+    <Folder Include="include\arpa\" />
+    <Folder Include="include\cxx\" />
+    <Folder Include="include\netinet\" />
+    <Folder Include="include\net\" />
+    <Folder Include="include\net\uip\" />
+    <Folder Include="include\nuttx\" />
+    <Folder Include="include\nuttx\lcd\" />
+    <Folder Include="include\nuttx\usb\" />
+    <Folder Include="include\sys\" />
+    <Folder Include="sched\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arch\avr\src\at32uc3\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="arch\avr\src\Makefile">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="arch\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\nsh\appconfig">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\nsh\defconfig">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\nsh\ld.script">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\nsh\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\nsh\setenv.sh">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\appconfig">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\defconfig">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\ld.script">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\setenv.sh">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\ostest\test-result.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\src\Makefile">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\avr32dev1\tools\doisp.sh">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="configs\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cassert">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cctype">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cerrno">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\climits">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cmath">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\csignal">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstdarg">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstdbool">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstddef">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstdint">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstdio">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstdlib">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\cstring">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="include\cxx\ctime">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="sched\Makefile">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>
