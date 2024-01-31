@@ -1,8 +1,9 @@
 /****************************************************************************
- * include/apps/nsh.h
+ * apps/nshlib/nsh_apps.c
  *
  *   Copyright (C) 2011 Gregory Nutt. All rights reserved.
- *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
+ *   Copyright (C) 2011 Uros Platise. All rights reserved.
+ *   Author: Uros Platise <uros.platise@isotel.eu>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,65 +34,99 @@
  *
  ****************************************************************************/
 
-#ifndef __INCLUDE_APPS_NSHLIB_H
-#define __INCLUDE_APPS_NSHLIB_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#ifdef CONFIG_SCHED_WAITPID
+#  include <sys/wait.h>
+#endif
+
+#include <stdbool.h>
+#include <errno.h>
+
+#include "apps.h"
+
+#include "nsh.h"
+
+#ifdef CONFIG_NSH_BUILTIN_APPS
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Definitions
  ****************************************************************************/
 
-#if CONFIG_RR_INTERVAL > 0
-# define SCHED_NSH SCHED_RR
-#else
-# define SCHED_NSH SCHED_FIFO
-#endif
+/****************************************************************************
+ * Private Types
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
 
 /****************************************************************************
  * Public Data
  ****************************************************************************/
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Public Function Prototypes
+ * Private Functions
  ****************************************************************************/
 
-/* Interfaces needed to initialize and execute the NuttShell (NSH).
- *
- * nsh_initialize() - This function function should be called one during
- *   application start-up prior to executing nsh_consolemain() or
- *   nsh_telnetmain().
- */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN void nsh_initialize(void);
+/****************************************************************************
+ * Name: nsh_execute
+ ****************************************************************************/
 
-/* The following interfaces maybe to called or started with task_start to
- * start an NSH instance.
- *
- * nsh_consolemain() starts NSH on the console (/dev/console).
- * nsh_telnetmain() starts a telnet daemon that will allow multiple
- *   connections via telnet.
- *
- * These functions do not return.
- */
+int nsh_execapp(FAR struct nsh_vtbl_s *vtbl, FAR const char *cmd,
+                FAR char *argv[])
+{
+   int ret = OK;
+   FAR const char * name;
 
-EXTERN int nsh_consolemain(int argc, char *argv[]);
-EXTERN int nsh_telnetmain(int argc, char *argv[]);
+   /* Try to find command within pre-built application list. */
 
-#undef EXTERN
-#ifdef __cplusplus
-}
+   ret = exec_nuttapp(cmd, argv);
+   if (ret < 0)
+     {
+       int err = -errno;
+       int i;
+
+       /* On failure, list the set of available built-in commands */
+
+       nsh_output(vtbl, "Builtin Apps: ");
+       for (i = 0; (name = nuttapp_getname(i)) != NULL; i++)
+         {
+           nsh_output(vtbl, "%s ", name);
+         }
+       nsh_output(vtbl, "\nand type 'help' for more NSH commands.\n\n");
+       
+	   return err;
+     }
+
+#ifdef CONFIG_SCHED_WAITPID
+   if (vtbl->np.np_bg == false)
+     {
+       waitpid(ret, NULL, 0);
+     }
+   else
 #endif
+     {
+       struct sched_param param;
+       sched_getparam(0, &param);
+       nsh_output(vtbl, "%s [%d:%d]\n", cmd, ret, param.sched_priority);
+     }
 
-#endif /* __INCLUDE_APPS_NSHLIB_H */
+   return OK;
+}
+
+#endif /* CONFIG_NSH_BUILTIN_APPS */
+
+

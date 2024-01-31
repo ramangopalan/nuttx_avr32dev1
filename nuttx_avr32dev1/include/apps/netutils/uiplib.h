@@ -49,7 +49,7 @@
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
+#include <nuttx_config.h>
 
 #include <stdint.h>
 #include <stdbool.h>

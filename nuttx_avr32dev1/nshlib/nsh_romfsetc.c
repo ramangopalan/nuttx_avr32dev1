@@ -1,7 +1,7 @@
 /****************************************************************************
- * nuttx/ramdisk.h
+ * apps/nshlib/nsh_romfsetc.c
  *
- *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008-2011 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,58 +33,92 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_RAMDISK_H
-#define __NUTTX_RAMDISK_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <stdint.h>
-#include <stdbool.h>
+#include <sys/mount.h>
+#include <debug.h>
+#include <errno.h>
 
-/****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
+#include <ramdisk.h>
 
-/****************************************************************************
- * Type Definitions
- ****************************************************************************/
+#include "nsh.h"
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+#ifdef CONFIG_NSH_ROMFSETC
 
-#ifdef __cplusplus
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-/* Non-standard function to register a ramdisk or a romdisk
- *
- *   minor:         Selects suffix of device named /dev/ramN, N={1,2,3...}
- *   nsectors:      Number of sectors on device
- *   sectize:       The size of one sector
- *   writeenabled:  true: can write to ram disk
- *   buffer:        RAM disk backup memory
+/* Should we use the default ROMFS image?  Or a custom, board-specific
+ * ROMFS image?
  */
 
-#ifdef CONFIG_FS_WRITABLE
-EXTERN int ramdisk_register(int minor, uint8_t *buffer, uint32_t nsectors,
-                            uint16_t sectize, bool writeenabled);
-#define romdisk_register(m,b,n,s) ramdisk_register(m,b,n,s,0)
+#ifdef CONFIG_NSH_ARCHROMFS
+#  include <arch/board/nsh_romfsimg.h>
 #else
-EXTERN int romdisk_register(int minor, uint8_t *buffer, uint32_t nsectors,
-                            uint16_t sectize);
+#  include "nsh_romfsimg.h"
 #endif
 
-#undef EXTERN
-#ifdef __cplusplus
+/****************************************************************************
+ * Definitions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Types
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: nsh_romfsetc
+ ****************************************************************************/
+
+int nsh_romfsetc(void)
+{
+  int  ret;
+
+  /* Create a ROM disk for the /etc filesystem */
+
+  ret = romdisk_register(CONFIG_NSH_ROMFSDEVNO, romfs_img,
+                         NSECTORS(romfs_img_len), CONFIG_NSH_ROMFSSECTSIZE);
+  if (ret < 0)
+    {
+      dbg("nsh: romdisk_register failed: %d\n", -ret);
+      return ERROR;
+    }
+
+  /* Mount the file system */
+
+  vdbg("Mounting ROMFS filesystem at target=%s with source=%s\n",
+       CONFIG_NSH_ROMFSMOUNTPT, MOUNT_DEVNAME);
+
+  ret = mount(MOUNT_DEVNAME, CONFIG_NSH_ROMFSMOUNTPT, "romfs", MS_RDONLY, NULL);
+  if (ret < 0)
+    {
+      dbg("nsh: mount(%s,%s,romfs) failed: %d\n",
+          MOUNT_DEVNAME, CONFIG_NSH_ROMFSMOUNTPT, errno);
+      return ERROR;
+    }
+  return OK;
 }
-#endif
 
-#endif /* __NUTTX_RAMDISK_H */
+#endif /* CONFIG_NSH_ROMFSETC */
+

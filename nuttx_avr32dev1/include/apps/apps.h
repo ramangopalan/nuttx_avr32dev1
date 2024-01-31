@@ -40,7 +40,7 @@
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
+#include <nuttx_config.h>
 #include <sys/types.h>
 #include <stdint.h>
 
