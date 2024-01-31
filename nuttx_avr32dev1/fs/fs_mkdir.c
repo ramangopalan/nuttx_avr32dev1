@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_mkdir.c
  *
  *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,51 +33,98 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-/* Include network ioctls info */
-
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: mkdir
+ *
+ * Description:  Create a directory
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+int mkdir(const char *pathname, mode_t mode)
+{
+  FAR struct inode *inode;
+  const char       *relpath = NULL;
+  int               ret;
+
+  /* Get an inode for this file */
+
+  inode = inode_find(pathname, &relpath);
+  if (!inode)
+    {
+      /* There is no mountpoint that includes in this path */
+
+      ret = ENOENT;
+      goto errout;
+    }
+
+  /* Verify that the inode is a valid mountpoint. */
+
+  if (!INODE_IS_MOUNTPT(inode) || !inode->u.i_mops)
+    {
+      ret = ENXIO;
+      goto errout_with_inode;
+    }
+
+  /* Perform the mkdir operation using the relative path
+   * at the mountpoint.
+   */
+
+  if (inode->u.i_mops->mkdir)
+    {
+      ret = inode->u.i_mops->mkdir(inode, relpath, mode);
+      if (ret < 0)
+        {
+          ret = -ret;
+          goto errout_with_inode;
+        }
+    }
+  else
+    { 
+      ret = ENOSYS;
+      goto errout_with_inode;
+    }
+
+  /* Directory successfully created */
+
+  inode_release(inode);
+  return OK;
+
+ errout_with_inode:
+  inode_release(inode);
+ errout:
+  *get_errno_ptr() = ret;
+  return ERROR;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

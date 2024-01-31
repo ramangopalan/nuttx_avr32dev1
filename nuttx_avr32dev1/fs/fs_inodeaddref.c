@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs_inodeaddref.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,51 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
-
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include <errno.h>
+#include <nuttx/fs.h>
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: inode_addref
+ *
+ * Description:
+ *   Increment the reference count on an inode (as when a file
+ *   descriptor is dup'ed.
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+void inode_addref(FAR struct inode *inode)
+{
+  if (inode)
+    {
+      inode_semtake();
+      inode->i_crefs++;
+      inode_semgive();
+    }
 }
-#endif
-
-#endif /* __SYS_IOCTL_H */

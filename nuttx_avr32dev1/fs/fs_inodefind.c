@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_inodefind.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,66 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: inode_find
+ *
+ * Description:
+ *   This is called from the open() logic to get a reference
+ *   to the inode associated with a path.
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+FAR struct inode *inode_find(FAR const char *path, FAR const char **relpath)
+{
+  FAR struct inode *node;
+
+  if (!*path || path[0] != '/')
+    {
+      return NULL;
+    }
+
+  /* Find the node matching the path.  If found,
+   * increment the count of references on the node.
+   */
+
+  inode_semtake();
+  node = inode_search(&path, (FAR struct inode**)NULL, (FAR struct inode**)NULL, relpath);
+  if (node)
+    {
+      node->i_crefs++;
+    }
+  inode_semgive();
+  return node;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

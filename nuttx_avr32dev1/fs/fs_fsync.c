@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_fsync.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,105 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <fs.h>
+#include <sched.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: fsync
+ *
+ * Description:
+ *   This func simply binds inode sync methods to the sync system call.
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+int fsync(int fd)
+{
+  FAR struct filelist *list;
+  FAR struct file     *this_file;
+  struct inode        *inode;
+  int                  ret;
+
+  /* Get the thread-specific file list */
+
+  list = sched_getfiles();
+  if (!list)
+    {
+      ret = EMFILE;
+      goto errout;
+    }
+
+  /* Did we get a valid file descriptor? */
+
+  if ((unsigned int)fd >= CONFIG_NFILE_DESCRIPTORS)
+    {
+      ret = EBADF;
+      goto errout;
+    }
+
+  /* Was this file opened for write access? */
+
+  this_file = &list->fl_files[fd];
+  if ((this_file->f_oflags & O_WROK) == 0)
+    {
+      ret = EBADF;
+      goto errout;
+    }
+
+  /* Is this inode a registered mountpoint? Does it support the
+   * sync operations may be relevant to device drivers but only
+   * the mountpoint operations vtable contains a sync method.
+   */
+
+  inode = this_file->f_inode;
+  if (!inode || !INODE_IS_MOUNTPT(inode) ||
+      !inode->u.i_mops || !inode->u.i_mops->sync)
+    {
+      ret = EINVAL;
+      goto errout;
+    }
+
+  /* Yes, then tell the mountpoint to sync this file */
+
+  ret = inode->u.i_mops->sync(this_file);
+  if (ret >= 0)
+  {
+      return OK;
+  }
+  ret = -ret;
+
+ errout:
+  *get_errno_ptr() = ret;
+  return ERROR;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

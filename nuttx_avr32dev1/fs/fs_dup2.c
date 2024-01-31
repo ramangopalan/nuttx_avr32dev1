@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_dup2.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,75 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
+#include <unistd.h>
+#include <sched.h>
+#include <errno.h>
 
-/* Include network ioctls info */
+#include "fs_internal.h"
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+/* This logic in this applies only when both socket and file descriptors are
+ * in that case, this function descriminates which type of dup2 is being
+ * performed.
+ */
+
+#if CONFIG_NFILE_DESCRIPTORS > 0 && defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Global Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Name: dup2
+ *
+ * Description:
+ *   Clone a file descriptor or socket descriptor to a specific descriptor
+ *   number
+ *
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+int dup2(int fildes1, int fildes2)
+{
+  /* Check the range of the descriptor to see if we got a file or a socket
+   * descriptor. */
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  if ((unsigned int)fildes1 >= CONFIG_NFILE_DESCRIPTORS)
+    {
+      /* Not a vailid file descriptor.  Did we get a valid socket descriptor? */
 
-#undef EXTERN
-#if defined(__cplusplus)
+      if ((unsigned int)fildes1 < (CONFIG_NFILE_DESCRIPTORS+CONFIG_NSOCKET_DESCRIPTORS))
+        {
+          /* Yes.. dup the socket descriptor */
+
+          return net_dup2(fildes1, fildes2);
+        }
+      else
+        {
+          /* No.. then it is a bad descriptor number */
+
+          errno = EBADF;
+          return ERROR;
+        }
+    }
+  else
+    {
+      /* Its a valid file descriptor.. dup the file descriptor */
+
+      return file_dup2(fildes1, fildes2);
+    }
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */
+#endif /* CONFIG_NFILE_DESCRIPTORS > 0 ... */
+

@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_rewinddir.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,112 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <dirent.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Name: rewindpsuedodir
  ****************************************************************************/
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+static inline void rewindpsuedodir(struct internal_dir_s *idir)
+{
+  struct inode *prev;
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  inode_semtake();
 
-/* ioctl() is a non-standard UNIX-like API */
+  /* Reset the position to the beginning */
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  prev                   = idir->u.psuedo.fd_next; /* (Save to delete later) */
+  idir->u.psuedo.fd_next = idir->fd_root;          /* The next node to visit */
+  idir->fd_position      = 0;                      /* Reset position */
 
-#undef EXTERN
-#if defined(__cplusplus)
+  /* Increment the reference count on the root=next node.  We
+   * should now have two references on the inode.
+   */
+
+  idir->fd_root->i_crefs++;
+  inode_semgive();
+
+  /* Then release the reference to the old next inode */
+
+  if (prev)
+    {
+      inode_release(prev);
+    }
 }
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: rewinddir
+ *
+ * Description:
+ *   The  rewinddir() function resets the position of the
+ *   directory stream dir to the beginning of the directory.
+ *
+ * Inputs:
+ *   dirp -- An instance of type DIR created by a previous
+ *     call to opendir();
+ *
+ * Return:
+ *   None
+ *
+ ****************************************************************************/
+
+void rewinddir(FAR DIR *dirp)
+{
+  struct internal_dir_s *idir = (struct internal_dir_s *)dirp;
+#ifndef CONFIG_DISABLE_MOUNTPOINT
+  struct inode *inode;
 #endif
 
-#endif /* __SYS_IOCTL_H */
+  /* Sanity checks */
+
+  if (!idir || !idir->fd_root)
+    {
+      return;
+    }
+
+  /* The way we handle the readdir depends on the type of inode
+   * that we are dealing with.
+   */
+
+#ifndef CONFIG_DISABLE_MOUNTPOINT
+  inode = idir->fd_root;
+  if (INODE_IS_MOUNTPT(inode))
+    {
+      /* The node is a file system mointpoint. Verify that the mountpoint
+       * supports the rewinddir() method
+       */
+
+      if (inode->u.i_mops && inode->u.i_mops->rewinddir)
+        {
+          /* Perform the rewinddir() operation */
+
+          inode->u.i_mops->rewinddir(inode, idir);
+        }
+    }
+  else
+#endif
+    {
+      /* The node is part of the root psuedo file system */
+
+      rewindpsuedodir(idir);
+    }
+}
+

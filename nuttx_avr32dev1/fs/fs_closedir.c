@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_closedir.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,116 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <stdlib.h>
+#include <dirent.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
+#include "fs_internal.h"
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: seekdir
+ *
+ * Description:
+ *    The closedir() function closes the directory stream 
+ *    associated with 'dirp'.  The directory stream
+ *    descriptor 'dirp' is not available after this call.
+ *
+ * Inputs:
+ *   dirp -- An instance of type DIR created by a previous
+ *     call to opendir();
+ *
+ * Return:
+ *   The closedir() function returns 0 on success.  On error,
+ *   -1 is returned, and errno is set appropriately.
+ *
+ ****************************************************************************/
+
+int closedir(FAR DIR *dirp)
+{
+  struct internal_dir_s *idir = (struct internal_dir_s *)dirp;
+  struct inode *inode;
+  int ret;
+
+  if (!idir || !idir->fd_root)
+    {
+      ret = EBADF;
+      goto errout;
+    }
+
+  /* This is the 'root' inode of the directory.  This means different
+   * things wih different filesystems.
+   */
+
+  inode = idir->fd_root;
+
+  /* The way that we handle the close operation depends on what kind of root
+   * inode we have open.
+   */
+
+#ifndef CONFIG_DISABLE_MOUNTPOINT
+  if (INODE_IS_MOUNTPT(inode) && !DIRENT_ISPSUEDONODE(idir->fd_flags))
+    {
+      /* The node is a file system mointpoint. Verify that the mountpoint
+       * supports the closedir() method (not an error if it does not)
+       */
+
+      if (inode->u.i_mops && inode->u.i_mops->closedir)
+         {
+           /* Perform the closedir() operation */
+
+          ret = inode->u.i_mops->closedir(inode, idir);
+          if (ret < 0)
+            {
+              ret = -ret;
+              goto errout_with_inode;
+            }
+        }
+    }
+  else
+#endif
+    {
+      /* The node is part of the root psuedo file system, release
+       * our contained reference to the 'next' inode.
+       */
+
+      if (idir->u.psuedo.fd_next)
+        {
+          inode_release(idir->u.psuedo.fd_next);
+        }
+    }
+
+  /* Release our references on the contained 'root' inode */
+
+  inode_release(idir->fd_root);
+
+  /* Then release the container */
+
+  free(idir);
+  return OK;
+
+#ifndef CONFIG_DISABLE_MOUNTPOINT
+errout_with_inode:
+  inode_release(inode);
+  free(idir);
 #endif
 
-/****************************************************************************
- * Pre-Processor Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Type Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-/* ioctl() is a non-standard UNIX-like API */
-
-EXTERN int ioctl(int fd, int req, unsigned long arg);
-
-#undef EXTERN
-#if defined(__cplusplus)
+errout:
+  *get_errno_ptr() = ret;
+  return ERROR;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

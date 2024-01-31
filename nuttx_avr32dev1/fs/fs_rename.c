@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/poll.h
+ * fs/fs_rename.c
  *
- *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,106 +33,122 @@
  *
  ****************************************************************************/
 
-#ifndef __INCLUDE_POLL_H
-#define __INCLUDE_POLL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <stdint.h>
-#include <semaphore.h>
+#include <stdio.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+
+#include "fs_internal.h"
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
-/* Poll event definitions:
- *
- *   POLLIN
- *     Data other than high-priority data may be read without blocking.
- *   POLLRDNORM
- *     Normal data may be read without blocking.
- *   POLLRDBAND
- *     Priority data may be read without blocking.
- *   POLLPRI
- *     High priority data may be read without blocking.
- *   POLLOUT
- *     Normal data may be written without blocking.
- *   POLLWRNORM
- *     Equivalent to POLLOUT.
- *   POLLWRBAND
- *     Priority data may be written.
- *   POLLERR
- *     An error has occurred (revents only).
- *   POLLHUP
- *     Device has been disconnected (revents only).
- *   POLLNVAL
- *     Invalid fd member (revents only).
- */
-
-#define POLLIN       (0x01)  /* NuttX does not make priority distinctions */
-#define POLLRDNORM   (0x01)
-#define POLLRDBAND   (0x01)
-#define POLLPRI      (0x01)
-
-#define POLLOUT      (0x02)  /* NuttX does not make priority distinctions */
-#define POLLWRNORM   (0x02)
-#define POLLWRBAND   (0x02)
-
-#define POLLERR      (0x04)
-#define POLLHUP      (0x08)
-#define POLLNVAL     (0x10)
-
 /****************************************************************************
- * Public Type Definitions
+ * Private Variables
  ****************************************************************************/
-
-/* The number of poll descriptors (required by poll() specification */
-
-typedef unsigned int nfds_t;
-
-/* In the standard poll() definition, the size of the event set is 'short'.
- * Here we pick the smallest storage element that will contain all of the
- * poll events.
- */
-
-typedef uint8_t pollevent_t;
-
-/* This is the Nuttx variant of the standard pollfd structure. */
-
-struct pollfd
-{
-  int         fd;       /* The descriptor being polled */
-  sem_t      *sem;      /* Pointer to semaphore used to post output event */
-  pollevent_t events;   /* The input event flags */
-  pollevent_t revents;  /* The output event flags */
-  FAR void   *priv;     /* For use by drivers */
-};
 
 /****************************************************************************
  * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Public Function Prototypes
+ * Private Functions
  ****************************************************************************/
 
-EXTERN int poll(FAR struct pollfd *fds, nfds_t nfds, int timeout);
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+/****************************************************************************
+ * Name: rename
+ *
+ * Description:  Remove a file managed a mountpoint
+ *
+ ****************************************************************************/
+
+int rename(FAR const char *oldpath, FAR const char *newpath)
+{
+  FAR struct inode *oldinode;
+  FAR struct inode *newinode;
+  const char       *oldrelpath = NULL;
+  const char       *newrelpath = NULL;
+  int               ret;
+
+  /* Get an inode for the old relpath */
+
+  oldinode = inode_find(oldpath, &oldrelpath);
+  if (!oldinode)
+    {
+      /* There is no mountpoint that includes in this path */
+
+      ret = ENOENT;
+      goto errout;
+    }
+
+  /* Verify that the old inode is a valid mountpoint. */
+
+  if (!INODE_IS_MOUNTPT(oldinode) || !oldinode->u.i_mops)
+    {
+      ret = ENXIO;
+      goto errout_with_oldinode;
+    }
+
+  /* Get an inode for the new relpath -- it should like on the same mountpoint */
+
+  newinode = inode_find(newpath, &newrelpath);
+  if (!newinode)
+    {
+      /* There is no mountpoint that includes in this path */
+
+      ret = ENOENT;
+      goto errout_with_oldinode;
+    }
+
+  /* Verify that the two pathes lie on the same mountpt inode */
+
+  if (oldinode != newinode)
+    {
+      ret = EXDEV;
+      goto errout_with_newinode;
+    }
+
+  /* Perform the rename operation using the relative pathes
+   * at the common mountpoint.
+   */
+
+  if (oldinode->u.i_mops->rename)
+    {
+      ret = oldinode->u.i_mops->rename(oldinode, oldrelpath, newrelpath);
+      if (ret < 0)
+        {
+          ret = -ret;
+          goto errout_with_newinode;
+        }
+    }
+  else
+    { 
+      ret = ENOSYS;
+      goto errout_with_newinode;
+    }
+
+  /* Successfully renamed */
+
+  inode_release(oldinode);
+  inode_release(newinode);
+  return OK;
+
+ errout_with_newinode:
+  inode_release(newinode);
+ errout_with_oldinode:
+  inode_release(oldinode);
+ errout:
+  *get_errno_ptr() = ret;
+  return ERROR;
 }
-#endif
 
-#endif /* __INCLUDE_POLL_H */

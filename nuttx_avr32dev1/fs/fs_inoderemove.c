@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/poll.h
+ * fs/fs_inoderemove.c
  *
- *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,106 +33,123 @@
  *
  ****************************************************************************/
 
-#ifndef __INCLUDE_POLL_H
-#define __INCLUDE_POLL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
-#include <stdint.h>
-#include <semaphore.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Definitions
  ****************************************************************************/
-
-/* Poll event definitions:
- *
- *   POLLIN
- *     Data other than high-priority data may be read without blocking.
- *   POLLRDNORM
- *     Normal data may be read without blocking.
- *   POLLRDBAND
- *     Priority data may be read without blocking.
- *   POLLPRI
- *     High priority data may be read without blocking.
- *   POLLOUT
- *     Normal data may be written without blocking.
- *   POLLWRNORM
- *     Equivalent to POLLOUT.
- *   POLLWRBAND
- *     Priority data may be written.
- *   POLLERR
- *     An error has occurred (revents only).
- *   POLLHUP
- *     Device has been disconnected (revents only).
- *   POLLNVAL
- *     Invalid fd member (revents only).
- */
-
-#define POLLIN       (0x01)  /* NuttX does not make priority distinctions */
-#define POLLRDNORM   (0x01)
-#define POLLRDBAND   (0x01)
-#define POLLPRI      (0x01)
-
-#define POLLOUT      (0x02)  /* NuttX does not make priority distinctions */
-#define POLLWRNORM   (0x02)
-#define POLLWRBAND   (0x02)
-
-#define POLLERR      (0x04)
-#define POLLHUP      (0x08)
-#define POLLNVAL     (0x10)
 
 /****************************************************************************
- * Public Type Definitions
+ * Private Variables
  ****************************************************************************/
-
-/* The number of poll descriptors (required by poll() specification */
-
-typedef unsigned int nfds_t;
-
-/* In the standard poll() definition, the size of the event set is 'short'.
- * Here we pick the smallest storage element that will contain all of the
- * poll events.
- */
-
-typedef uint8_t pollevent_t;
-
-/* This is the Nuttx variant of the standard pollfd structure. */
-
-struct pollfd
-{
-  int         fd;       /* The descriptor being polled */
-  sem_t      *sem;      /* Pointer to semaphore used to post output event */
-  pollevent_t events;   /* The input event flags */
-  pollevent_t revents;  /* The output event flags */
-  FAR void   *priv;     /* For use by drivers */
-};
 
 /****************************************************************************
  * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Public Function Prototypes
+ * Private Functions
  ****************************************************************************/
 
-EXTERN int poll(FAR struct pollfd *fds, nfds_t nfds, int timeout);
+/****************************************************************************
+ * Name: inode_unlink
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+static void inode_unlink(struct inode *node,
+                         struct inode *peer,
+                         struct inode *parent)
+{
+  /* If peer is non-null, then remove the node from the right of
+   * of that peer node.
+   */
+
+   if (peer)
+     {
+       peer->i_peer = node->i_peer;
+     }
+
+   /* If parent is non-null, then remove the node from head of
+    * of the list of children.
+    */
+
+   else if (parent)
+     {
+       parent->i_child = node->i_peer;
+     }
+
+   /* Otherwise, we must be removing the root inode. */
+
+   else
+     {
+        root_inode = node->i_peer;
+     }
+   node->i_peer    = NULL;
 }
-#endif
 
-#endif /* __INCLUDE_POLL_H */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: inode_remove
+ *
+ * NOTE: Caller must hold the inode semaphore
+ ****************************************************************************/
+
+int inode_remove(const char *path)
+{
+  const char       *name = path;
+  FAR struct inode *node;
+  FAR struct inode *left;
+  FAR struct inode *parent;
+
+  if (!*path || path[0] != '/')
+    {
+      return -EINVAL;
+    }
+
+  /* Find the node to delete */
+
+  node = inode_search(&name, &left, &parent, (const char **)NULL);
+  if (node)
+    {
+      /* Found it, now remove it from the tree */
+
+      inode_unlink(node, left, parent);
+
+      /* We cannot delete it if there reference to the inode */
+
+      if (node->i_crefs)
+        {
+           /* In that case, we will mark it deleted, when the FS
+            * releases the inode, we will then, finally delete
+            * the subtree.
+            */
+
+           node->i_flags |= FSNODEFLAG_DELETED;
+           return -EBUSY;
+         }
+       else
+         {
+          /* And delete it now -- recursively to delete all of its children */
+
+          inode_free(node->i_child);
+          free(node);
+          return OK;
+        }
+    }
+
+  /* The node does not exist or it has references */
+
+  return -ENOENT;
+}

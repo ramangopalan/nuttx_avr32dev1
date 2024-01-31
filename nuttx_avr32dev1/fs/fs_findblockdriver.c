@@ -1,14 +1,14 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_openblockdriver.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use in pathname and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
- * 1. Redistributions of source code must retain the above copyright
+ * 1. Redistributions of pathname code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -33,51 +33,98 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
+#include <sys/types.h>
+#include <sys/mount.h>
+#include <debug.h>
+#include <errno.h>
+#include <fs.h>
 
-/* Include network ioctls info */
+#include "fs_internal.h"
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: find_blockdriver
+ *
+ * Description:
+ *   Return the inode of the block driver specified by 'pathname'
+ *
+ * Inputs:
+ *   pathname - the full path to the block driver to be located
+ *   mountflags - if MS_RDONLY is not set, then driver must support write
+ *     operations (see include/sys/mount.h)
+ *   ppinode - address of the location to return the inode reference
+ *
+ * Return:
+ *   Returns zero on success or a negated errno on failure:
+ *
+ *   EINVAL  - pathname or pinode is NULL
+ *   ENOENT  - No block driver of this name is registered
+ *   ENOTBLK - The inode associated with the pathname is not a block driver
+ *   EACCESS - The MS_RDONLY option was not set but this driver does not
+ *     support write access
+ *
+ ****************************************************************************/
+
+int find_blockdriver(FAR const char *pathname, int mountflags, FAR struct inode **ppinode)
+{
+  FAR struct inode *inode;
+  int ret = 0; /* Assume success */
+
+  /* Sanity checks */
+#ifdef CONFIG_DEBUG
+  if (!pathname || !ppinode)
+    {
+      ret = -EINVAL;
+      goto errout;
+    }
 #endif
 
-/****************************************************************************
- * Pre-Processor Definitions
- ****************************************************************************/
+  /* Find the inode registered with this pathname */
 
-/****************************************************************************
- * Type Definitions
- ****************************************************************************/
+  inode = inode_find(pathname, NULL);
+  if (!inode)
+    {
+      fdbg("Failed to find %s\n", pathname);
+      ret = -ENOENT;
+      goto errout;
+    }
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+  /* Verify that the inode is a block driver. */
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  if (!INODE_IS_BLOCK(inode))
+    { 
+      fdbg("%s is not a block driver\n", pathname);
+      ret = -ENOTBLK;
+      goto errout_with_inode;
+   }
 
-/* ioctl() is a non-standard UNIX-like API */
+  /* Make sure that the inode supports the requested access */
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  if (!inode->u.i_bops || !inode->u.i_bops->read ||
+      (!inode->u.i_bops->write && (mountflags & MS_RDONLY) == 0))
+    {
+      fdbg("%s does not support requested access\n", pathname);
+      ret = -EACCES;
+      goto errout_with_inode;
+    }
 
-#undef EXTERN
-#if defined(__cplusplus)
+  *ppinode = inode;
+  return OK;
+
+errout_with_inode:
+  inode_release(inode);
+errout:
+  return ret;
 }
-#endif
-
-#endif /* __SYS_IOCTL_H */

@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_unregisterdriver.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,50 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Types
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Private Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Public Variables
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+/****************************************************************************
+ * Name: unregister_driver()
+ ****************************************************************************/
+
+int unregister_driver(const char *path)
+{
+  int ret;
+  inode_semtake();
+  ret = inode_remove(path);
+  inode_semgive();
+  return ret;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

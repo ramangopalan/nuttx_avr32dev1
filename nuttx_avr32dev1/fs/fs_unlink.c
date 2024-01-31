@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs_unlink.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,98 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <unistd.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: unlink
+ *
+ * Description:  Remove a file managed a mountpoint
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+int unlink(FAR const char *pathname)
+{
+  FAR struct inode *inode;
+  const char       *relpath = NULL;
+  int               ret;
+
+  /* Get an inode for this file */
+
+  inode = inode_find(pathname, &relpath);
+  if (!inode)
+    {
+      /* There is no mountpoint that includes in this path */
+
+      ret = ENOENT;
+      goto errout;
+    }
+
+  /* Verify that the inode is a valid mountpoint. */
+
+  if (!INODE_IS_MOUNTPT(inode) || !inode->u.i_mops)
+    {
+      ret = ENXIO;
+      goto errout_with_inode;
+    }
+
+  /* Perform the unlink operation using the relative path
+   * at the mountpoint.
+   */
+
+  if (inode->u.i_mops->unlink)
+    {
+      ret = inode->u.i_mops->unlink(inode, relpath);
+      if (ret < 0)
+        {
+          ret = -ret;
+          goto errout_with_inode;
+        }
+    }
+  else
+    { 
+      ret = ENOSYS;
+      goto errout_with_inode;
+    }
+
+  /* Successfully unlinked */
+
+  inode_release(inode);
+  return OK;
+
+ errout_with_inode:
+  inode_release(inode);
+ errout:
+  *get_errno_ptr() = ret;
+  return ERROR;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

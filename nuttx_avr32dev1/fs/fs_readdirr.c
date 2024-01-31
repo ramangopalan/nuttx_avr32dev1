@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_readdirr.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,88 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
-
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include <string.h>
+#include <dirent.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: readdir_r
+ *
+ * Description:
+ *   The readdir() function returns a pointer to a dirent
+ *   structure representing the next directory entry in the
+ *   directory stream pointed to by dir.  It returns NULL on
+ *   reaching the end-of-file or if an error occurred.
+ *
+ * Inputs:
+ *   dirp -- An instance of type DIR created by a previous
+ *     call to opendir();
+ *   entry -- The  storage  pointed to by entry must be large
+ *     enough for a dirent with an array of char d_name
+ *     members containing at least {NAME_MAX}+1 elements.
+ *   result -- Upon successful return, the pointer returned
+ *     at *result shall have the  same  value  as  the 
+ *     argument entry. Upon reaching the end of the directory
+ *     stream, this pointer shall have the value NULL.
+ *
+ * Return:
+ *   If successful, the readdir_r() function return s zero;
+ *   otherwise, an error number is returned to indicate the
+ *   error.
+ *
+ *   EBADF   - Invalid directory stream descriptor dir
+ *
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+int readdir_r(FAR DIR *dirp, FAR struct dirent *entry,
+              FAR struct dirent **result)
+{
+  struct dirent *tmp;
 
-/* ioctl() is a non-standard UNIX-like API */
+  *get_errno_ptr() = 0;
+  tmp = readdir(dirp);
+  if (!tmp)
+    {
+       int error = *get_errno_ptr();
+       if (!error)
+          {
+            if (result)
+              {
+                *result = NULL;
+              }
+            return 0;
+          }
+       else
+          {
+            return error;
+          }
+    }
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  if (entry)
+    {
+      memcpy(entry, tmp, sizeof(struct dirent));
+    }
 
-#undef EXTERN
-#if defined(__cplusplus)
+  if (result)
+    {
+      *result = entry;
+    }
+  return 0;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

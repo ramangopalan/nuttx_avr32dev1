@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_filedup.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,87 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <sched.h>
+#include <errno.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include <fs.h>
+#include "fs_internal.h"
+
+#if CONFIG_NFILE_DESCRIPTORS > 0
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
+ ****************************************************************************/
+
+#define DUP_ISOPEN(fd, list) \
+  ((unsigned int)fd < CONFIG_NFILE_DESCRIPTORS && \
+   list->fl_files[fd].f_inode != NULL)
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Global Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: file_dup OR dup
+ *
+ * Description:
+ *   Clone a file descriptor to an arbitray descriptor number.  If socket
+ *   descriptors are implemented, then this is called by dup() for the case
+ *   of file descriptors.  If socket descriptors are not implemented, then
+ *   this function IS dup().
+ *
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+int file_dup(int fildes, int minfd)
+{
+  FAR struct filelist *list;
+  int fildes2;
 
-/* ioctl() is a non-standard UNIX-like API */
+  /* Get the thread-specific file list */
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  list = sched_getfiles();
+  if (!list)
+    {
+      errno = EMFILE;
+      return ERROR;
+    }
 
-#undef EXTERN
-#if defined(__cplusplus)
+ /* Verify that fildes is a valid, open file descriptor */
+
+  if (!DUP_ISOPEN(fildes, list))
+    {
+      errno = EBADF;
+      return ERROR;
+    }
+
+  /* Increment the reference count on the contained inode */
+
+  inode_addref(list->fl_files[fildes].f_inode);
+
+  /* Then allocate a new file descriptor for the inode */
+
+  fildes2 = files_allocate(list->fl_files[fildes].f_inode,
+                           list->fl_files[fildes].f_oflags,
+                           list->fl_files[fildes].f_pos,
+                           minfd);
+  if (fildes2 < 0)
+    {
+      errno = EMFILE;
+       inode_release(list->fl_files[fildes].f_inode);
+      return ERROR;
+    }
+  return fildes2;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */
+#endif /* CONFIG_NFILE_DESCRIPTORS > 0 */
+

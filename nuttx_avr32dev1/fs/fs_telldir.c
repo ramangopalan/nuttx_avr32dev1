@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_telldir.c
  *
  *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,51 +33,57 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
-
-/* Include network ioctls info */
-
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include <sys/types.h>
+#include <dirent.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Name: telldir
+ *
+ * Description:
+ *   The telldir() function returns the current location
+ *   associated with the directory stream dirp.
+ *
+ * Inputs:
+ *   dirp -- An instance of type DIR created by a previous
+ *     call to opendir();
+ *
+ * Return:
+ *   On success, the telldir() function returns the current
+ *   location in the directory stream.  On error, -1 is
+ *   returned, and errno is set appropriately.
+ *
+ *   EBADF - Invalid directory stream descriptor dir
+ *
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+off_t telldir(FAR DIR *dirp)
+{
+  struct internal_dir_s *idir = (struct internal_dir_s *)dirp;
 
-/* ioctl() is a non-standard UNIX-like API */
+  if (!idir || !idir->fd_root)
+    {
+      *get_errno_ptr() = EBADF;
+      return (off_t)-1;
+    }
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+  /* Just return the current position */
 
-#undef EXTERN
-#if defined(__cplusplus)
+  return idir->fd_position;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

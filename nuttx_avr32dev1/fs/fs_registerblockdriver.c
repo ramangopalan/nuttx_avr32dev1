@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_registerblockdriver.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,71 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+#include "fs_internal.h"
 
-/* Include network ioctls info */
+/****************************************************************************
+ * Definitions
+ ****************************************************************************/
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
+/****************************************************************************
+ * Private Variables
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Variables
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: register_driver
+ ****************************************************************************/
+
+int register_blockdriver(const char *path,
+                            const struct block_operations *bops,
+                            mode_t mode, void *priv)
+{
+  struct inode *node;
+  int ret = -ENOMEM;
+
+  /* Insert an inode for the device driver -- we need to hold the inode semaphore
+   * to prevent access to the tree while we this.  This is because we will have a
+   * momentarily bad true until we populate the inode with valid data.
+   */
+
+  inode_semtake();
+  node = inode_reserve(path);
+  if (node != NULL)
+    {
+      /* We have it, now populate it with block driver specific
+       * information.
+       */
+
+      INODE_SET_BLOCK(node);
+
+      node->u.i_bops  = bops;
+#ifdef CONFIG_FILE_MODE
+      node->i_mode    = mode;
 #endif
+      node->i_private = priv;
+      ret             = OK;
+    }
 
-/****************************************************************************
- * Pre-Processor Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Type Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
-
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-/* ioctl() is a non-standard UNIX-like API */
-
-EXTERN int ioctl(int fd, int req, unsigned long arg);
-
-#undef EXTERN
-#if defined(__cplusplus)
+  inode_semgive();
+  return ret;
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

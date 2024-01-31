@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs_inoderelease.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2007-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,51 +33,74 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <stdlib.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
-#endif
+#include "fs_internal.h"
 
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Type Definitions
+ * Private Variables
  ****************************************************************************/
 
 /****************************************************************************
- * Public Function Prototypes
+ * Public Variables
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
-/* ioctl() is a non-standard UNIX-like API */
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
+/****************************************************************************
+ * Name: inode_release
+ *
+ * Description:
+ *   This is called from close() logic when it no longer refers
+ *   to the inode.
+ *
+ ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
+void inode_release(FAR struct inode *node)
+{
+  if (node)
+    {
+      /* Decrement the references of the inode */
+
+      inode_semtake();
+      if (node->i_crefs)
+        {
+          node->i_crefs--;
+        }
+
+      /* If the subtree was previously deleted and the reference
+       * count has decrement to zero,  then delete the inode
+       * now.
+       */
+
+      if (node->i_crefs <= 0 && (node->i_flags & FSNODEFLAG_DELETED) != 0)
+        {
+           inode_semgive();
+           inode_free(node->i_child);
+           free(node);
+        }
+      else
+        {
+           inode_semgive();
+        }
+    }
 }
-#endif
 
-#endif /* __SYS_IOCTL_H */

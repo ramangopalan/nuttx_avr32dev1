@@ -127,6 +127,7 @@
       <Value>../arch/avr/src/at32uc3</Value>
       <Value>../include/nuttx</Value>
       <Value>../include/apps</Value>
+      <Value>../fs</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -413,6 +414,165 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="configs\avr32dev1\src\up_leds.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_configfat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_fat32.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_fat32.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_fat32attrib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_fat32util.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_mkfatfs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_mkfatfs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fat\fs_writefat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_close.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_closeblockdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_closedir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_dup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_dup2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_fcntl.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_filedup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_filedup2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_files.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_findblockdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_fsync.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inode.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inodeaddref.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inodefind.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inoderelease.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inoderemove.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_inodereserve.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_ioctl.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_lseek.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_mkdir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_mmap.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_mount.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_open.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_openblockdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_opendir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_poll.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_read.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_readdir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_readdirr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_registerblockdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_registerdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_rename.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_rewinddir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_rmdir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_seekdir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_select.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_stat.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_statfs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_telldir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_umount.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_unlink.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_unregisterblockdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_unregisterdriver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fs\fs_write.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\apps\apps.h">
@@ -1963,6 +2123,8 @@
     <Folder Include="configs\avr32dev1\ostest\" />
     <Folder Include="configs\avr32dev1\src\" />
     <Folder Include="configs\avr32dev1\tools\" />
+    <Folder Include="fs\" />
+    <Folder Include="fs\fat\" />
     <Folder Include="include\" />
     <Folder Include="include\apps\" />
     <Folder Include="include\apps\netutils\" />
@@ -2033,6 +2195,12 @@
       <SubType>compile</SubType>
     </None>
     <None Include="configs\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="fs\fat\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="fs\Makefile">
       <SubType>compile</SubType>
     </None>
     <None Include="include\cxx\cassert">

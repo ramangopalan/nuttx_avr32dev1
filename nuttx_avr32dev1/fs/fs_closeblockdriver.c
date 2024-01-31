@@ -1,14 +1,14 @@
 /****************************************************************************
- * include/sys/ioctl.h
+ * fs/fs_closeblockdriver.c
  *
- *   Copyright (C) 2007, 2008 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use in pathname and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
- * 1. Redistributions of source code must retain the above copyright
+ * 1. Redistributions of pathname code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -33,51 +33,78 @@
  *
  ****************************************************************************/
 
-#ifndef __SYS_IOCTL_H
-#define __SYS_IOCTL_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-/* Get NuttX configuration and NuttX-specific IOCTL definitions */
-
 #include <nuttx_config.h>
-#include <nuttx/ioctl.h>
 
-/* Include network ioctls info */
+#include <debug.h>
+#include <errno.h>
+#include <nuttx/fs.h>
 
-#if defined(CONFIG_NET) && CONFIG_NSOCKET_DESCRIPTORS > 0
-# include <net/ioctls.h>
+#include "fs_internal.h"
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: close_blockdriver
+ *
+ * Description:
+ *   Call the close method and release the inode
+ *
+ * Inputs:
+ *   inode - reference to the inode of a block driver opened by open_blockdriver
+ *
+ * Return:
+ *   Returns zero on success or a negated errno on failure:
+ *
+ *   EINVAL  - inode is NULL
+ *   ENOTBLK - The inode is not a block driver
+ *
+ ****************************************************************************/
+
+int close_blockdriver(FAR struct inode *inode)
+{
+  int ret = 0; /* Assume success */
+
+  /* Sanity checks */
+#ifdef CONFIG_DEBUG
+  if (!inode || !inode->u.i_bops)
+    {
+      ret = -EINVAL;
+      goto errout;
+    }
 #endif
 
-/****************************************************************************
- * Pre-Processor Definitions
- ****************************************************************************/
+  /* Verify that the inode is a block driver. */
 
-/****************************************************************************
- * Type Definitions
- ****************************************************************************/
+  if (!INODE_IS_BLOCK(inode))
+    { 
+      fdbg("inode is not a block driver\n");
+      ret = -ENOTBLK;
+      goto errout;
+   }
 
-/****************************************************************************
- * Public Function Prototypes
- ****************************************************************************/
+  /* Close the block driver.  Not that no mutually exclusive access
+   * to the driver is enforced here.  That must be done in the driver
+   * if needed.
+   */
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
+  if (inode->u.i_bops->close)
+    {
+      ret = inode->u.i_bops->close(inode);
+    }
 
-/* ioctl() is a non-standard UNIX-like API */
+  /* Then release the reference on the inode */
 
-EXTERN int ioctl(int fd, int req, unsigned long arg);
-
-#undef EXTERN
-#if defined(__cplusplus)
+  inode_release(inode);
+errout:
+  return ret;
 }
-#endif
-
-#endif /* __SYS_IOCTL_H */
