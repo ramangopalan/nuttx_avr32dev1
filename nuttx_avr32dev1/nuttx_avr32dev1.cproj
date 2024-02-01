@@ -109,8 +109,6 @@
   <avr32gcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
-      <Value>__NuttX__</Value>
-      <Value>__KERNEL__</Value>
     </ListValues>
   </avr32gcc.compiler.symbols.DefSymbols>
   <avr32gcc.compiler.directories.IncludePaths>
@@ -136,15 +134,29 @@
   <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
   <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
   <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
-  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.compiler.miscellaneous.OtherFlags>
+  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing -pipe</avr32gcc.compiler.miscellaneous.OtherFlags>
+  <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
+  <avr32gcc.linker.general.DoNotUseDefaultLibraries>True</avr32gcc.linker.general.DoNotUseDefaultLibraries>
   <avr32gcc.linker.libraries.Libraries>
     <ListValues>
       <Value>libm</Value>
+      <Value>libgcc</Value>
     </ListValues>
   </avr32gcc.linker.libraries.Libraries>
+  <avr32gcc.linker.libraries.LibrarySearchPaths>
+    <ListValues>
+      <Value>../configs/avr32dev1/nsh</Value>
+    </ListValues>
+  </avr32gcc.linker.libraries.LibrarySearchPaths>
   <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
   <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
   <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
+  <avr32gcc.linker.miscellaneous.LinkerFlags>-T ld.script</avr32gcc.linker.miscellaneous.LinkerFlags>
+  <avr32gcc.linker.miscellaneous.OtherOptions>
+    <ListValues>
+      <Value>--entry=__start</Value>
+    </ListValues>
+  </avr32gcc.linker.miscellaneous.OtherOptions>
   <avr32gcc.assembler.general.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
@@ -1545,6 +1557,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="nshlib\nsh_test.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="nsh_main.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sched\abort.c">
