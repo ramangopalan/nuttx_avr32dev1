@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/bch/bchlib_setup.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,126 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <sys/types.h>
+#include <sys/mount.h>
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <assert.h>
+#include <debug.h>
+
+#include <nuttx/fs.h>
+
+#include "bch_internal.h"
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Types
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Name: mmcsd_slotinitialize
+ * Name: bchlib_setup
  *
  * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
+ *   Setup so that the block driver referenced by 'blkdev' can be accessed
+ *   similar to a character device.
  *
  ****************************************************************************/
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
+int bchlib_setup(const char *blkdev, bool readonly, FAR void **handle)
+{
+  FAR struct bchlib_s *bch;
+  struct geometry geo;
+  int ret;
 
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
+  DEBUGASSERT(blkdev);
 
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
+  /* Allocate the BCH state structure */
 
-#undef EXTERN
-#if defined(__cplusplus)
+  bch = (FAR struct bchlib_s*)zalloc(sizeof(struct bchlib_s));
+  if (!bch)
+    {
+      fdbg("Failed to allocate BCH structure\n");
+      return -ENOMEM;
+    }
+
+  /* Open the block driver */
+
+  ret = open_blockdriver(blkdev, readonly ? MS_RDONLY : 0, &bch->inode);
+  if (ret < 0)
+    {
+      fdbg("Failed to open driver %s: %d\n", blkdev, -ret);
+      goto errout_with_bch;
+    }
+
+  DEBUGASSERT(bch->inode && bch->inode->u.i_bops && bch->inode->u.i_bops->geometry);
+
+  ret = bch->inode->u.i_bops->geometry(bch->inode, &geo);
+  if (ret < 0)
+    {
+      fdbg("geometry failed: %d\n", -ret);
+      goto errout_with_bch;
+    }
+
+  if (!geo.geo_available)
+    {
+      fdbg("geometry failed: %d\n", -ret);
+      ret = -ENODEV;
+      goto errout_with_bch;
+    }
+
+  if (!readonly && (!bch->inode->u.i_bops->write || !geo.geo_writeenabled))
+    {
+      fdbg("write access not supported\n");
+      ret = -EACCES;
+      goto errout_with_bch;
+    }
+
+  /* Save the geometry info and complete initialization of the structure */
+
+  sem_init(&bch->sem, 0, 1);
+  bch->nsectors = geo.geo_nsectors;
+  bch->sectsize = geo.geo_sectorsize;
+  bch->sector   = (size_t)-1;
+  bch->readonly = readonly;
+
+  /* Allocate the sector I/O buffer */
+
+  bch->buffer = (FAR uint8_t *)malloc(bch->sectsize);
+  if (!bch->buffer)
+    {
+      fdbg("Failed to allocate sector buffer\n");
+      ret = -ENOMEM;
+      goto errout_with_bch;
+    }
+
+  *handle = bch;
+  return OK;
+
+errout_with_bch:
+  free(bch);
+  return ret;
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */

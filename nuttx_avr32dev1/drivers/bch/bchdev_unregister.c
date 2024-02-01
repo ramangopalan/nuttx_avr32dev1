@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/bch/bchdev_unregister.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,126 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <sched.h>
+#include <errno.h>
+#include <assert.h>
+#include <debug.h>
+
+#include <nuttx/fs.h>
+#include <nuttx/ioctl.h>
+
+#include "bch_internal.h"
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Public Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
+/****************************************************************************
+ * Name: bchdev_unregister
+ *
+ * Description:
+ *   Undo the setup performed by losetup
+ *
+ ****************************************************************************/
+
+int bchdev_unregister(const char *chardev)
+{
+  FAR struct bchlib_s *bch;
+  int fd;
+  int ret;
+
+  /* Sanity check */
+
+#ifdef CONFIG_DEBUG
+  if (!chardev)
+    {
+      return -EINVAL;
+    }
 #endif
 
-/****************************************************************************
- * Name: mmcsd_slotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
- *
- ****************************************************************************/
+  /* Open the character driver associated with chardev */
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
+  fd = open(chardev, O_RDONLY);
+  if (fd < 0)
+    {
+      dbg("Failed to open %s: %d\n", chardev, errno);
+      return -errno;
+    }
 
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
+  /* Get a reference to the internal data structure.  On success, we
+   * will hold a reference count on the state structure.
+   */
 
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
+  ret = ioctl(fd, DIOC_GETPRIV, (unsigned long)&bch);
+  (void)close(fd);
 
-#undef EXTERN
-#if defined(__cplusplus)
+  if (ret < 0)
+    {
+      dbg("ioctl failed: %d\n", errno);
+      return -errno;
+    }
+
+  /* Lock out context switches.  If there are no other references
+   * and no context switches, then we can assume that we can safely
+   * teardown the driver.
+   */
+
+  sched_lock();
+
+  /* Check if the internal structure is non-busy (we hold one reference). */
+
+  if (bch->refs > 1)
+    {
+      ret = -EBUSY;
+      goto errout_with_lock;
+    }
+
+  /* Unregister the driver (this cannot suspend or we lose our non-preemptive
+   * state!).  Once the driver is successfully unregistered, we can assume
+   * we have exclusive access to the state instance.
+   */
+
+  ret = unregister_driver(chardev);
+  if (ret < 0)
+    {
+      goto errout_with_lock;
+    }
+  sched_unlock();
+
+  /* Release the internal structure */
+
+  bch->refs = 0;
+  return bchlib_teardown(bch);
+
+errout_with_lock:
+  bch->refs--;
+  sched_unlock();
+  return ret;
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */

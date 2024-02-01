@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/bch/bchlib_teardown.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,80 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <stdlib.h>
+#include <errno.h>
+#include <assert.h>
+#include <debug.h>
+
+#include <nuttx/fs.h>
+
+#include "bch_internal.h"
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Types
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Name: mmcsd_slotinitialize
+ * Name: bchlib_teardown
  *
  * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
+ *   Setup so that the block driver referenced by 'blkdev' can be accessed
+ *   similar to a character device.
  *
  ****************************************************************************/
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
+int bchlib_teardown(FAR void *handle)
+{
+  FAR struct bchlib_s *bch = (FAR struct bchlib_s *)handle;
 
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
+  DEBUGASSERT(handle);
 
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
+  /* Check that there are not outstanding reference counts on the object */
 
-#undef EXTERN
-#if defined(__cplusplus)
+  if (bch->refs > 0)
+    {
+      return -EBUSY;
+    }
+
+  /* Flush any pending data to the block driver */
+
+  bchlib_flushsector(bch);
+
+  /* Close the block driver */
+
+  (void)close_blockdriver(bch->inode);
+
+  /* Free the BCH state structure */
+
+  if (bch->buffer)
+    {
+      free(bch->buffer);
+    }
+
+  sem_destroy(&bch->sem);
+  free(bch);
+  return OK;
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */
+

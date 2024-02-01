@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/pipes/fifo.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,104 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <sys/types.h>
+#include <stdint.h>
+#include <nuttx/fs.h>
+#include <errno.h>
+
+#include "pipe_common.h"
+
+#if CONFIG_DEV_PIPE_SIZE > 0
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Types
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+static const struct file_operations fifo_fops =
+{
+  pipecommon_open,  /* open */
+  pipecommon_close, /* close */
+  pipecommon_read,  /* read */
+  pipecommon_write, /* write */
+  0,                /* seek */
+  0                 /* ioctl */
+#ifndef CONFIG_DISABLE_POLL
+  , pipecommon_poll /* poll */
+#endif
+};
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Name: mmcsd_slotinitialize
+ * Name: mkfifo
  *
  * Description:
- *   Initialize one slot for operation using the MMC/SD interface
+ *   mkfifo() makes a FIFO device driver file with name 'pathname.'  Unlike
+ *   Linux, a NuttX FIFO is not a special file type but simply a device driver
+ *   instance.  'mode' specifies the FIFO's permissions. 
  *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
+ *   Once the FIFO has been created by mkfifo(), any thread can open it for
+ *   reading or writing, in the same way as an ordinary file. However, it must
+ *   have been opened from both reading and writing before input or output
+ *   can be performed.  This FIFO implementation will block all attempts to
+ *   open a FIFO read-only until at least one thread has opened the FIFO for
+ *   writing.
  *
- ****************************************************************************/
-
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
-
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
+ *   If all threads that write to the FIFO have closed, subsequent calls to
+ *   read() on the FIFO will return 0 (end-of-file).
  *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
+ * Inputs:
+ *   pathname - The full path to the FIFO instance to attach to or to create
+ *     (if not already created).
+ *   mode - Ignored for now
  *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
+ * Return:
+ *   0 is returned on success; otherwise, -1 is returned with errno set
+ *   appropriately.
  *
  ****************************************************************************/
+int mkfifo(FAR const char *pathname, mode_t mode)
+{
+  struct pipe_dev_s *dev;
+  int ret;
+ 
+  /* Allocate and initialize a new device structure instance */
 
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
+  dev = pipecommon_allocdev();
+  if (!dev)
+    {
+      return -ENOMEM;
+    }
 
-#undef EXTERN
-#if defined(__cplusplus)
+  ret = register_driver(pathname, &fifo_fops, mode, (void*)dev);
+  if (ret != 0)
+    {
+      pipecommon_freedev(dev);
+    }
+  return ret;
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */
+#endif /* CONFIG_DEV_PIPE_SIZE > 0 */

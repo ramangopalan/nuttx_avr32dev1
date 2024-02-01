@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/bch/bchlib_sem.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,52 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <errno.h>
+#include <assert.h>
+#include <debug.h>
+
+#include "bch_internal.h"
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Name: mmcsd_slotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
- *
+ * Name: bch_semtake
  ****************************************************************************/
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
+void bchlib_semtake(FAR struct bchlib_s *bch)
+{
+  /* Take the semaphore (perhaps waiting) */
 
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
+  while (sem_wait(&bch->sem) != 0)
+    {
+      /* The only case that an error should occur here is if
+       * the wait was awakened by a signal.
+       */
 
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
-
-#undef EXTERN
-#if defined(__cplusplus)
+      ASSERT(errno == EINTR);
+    }
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */

@@ -1,7 +1,7 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/serial/lowconsole.c
  *
- *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008, 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,74 +33,100 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <sys/types.h>
+#include <errno.h>
+#include <debug.h>
+
+#include <nuttx_arch.h>
+#include <nuttx/fs.h>
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Definitions
+ ****************************************************************************/
+
+/* The architecture must provide up_putc for this driver */
+
+#ifndef CONFIG_ARCH_LOWPUTC
+#  error "Architecture must provide up_putc() for this driver"
+#endif
+
+/****************************************************************************
+ * Private Function Prototypes
+ ****************************************************************************/
+
+static ssize_t lowconsole_read(struct file *filep, char *buffer, size_t buflen);
+static ssize_t lowconsole_write(struct file *filep, const char *buffer, size_t buflen);
+static int     lowconsole_ioctl(struct file *filep, int cmd, unsigned long arg);
+
+/****************************************************************************
+ * Private Variables
+ ****************************************************************************/
+
+static const struct file_operations g_consoleops =
+{
+  0,                /* open */
+  0,                /* close */
+  lowconsole_read,  /* read */
+  lowconsole_write, /* write */
+  0,                /* seek */
+  lowconsole_ioctl  /* ioctl */
+#ifndef CONFIG_DISABLE_POLL
+  , 0               /* poll */
+#endif
+};
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Name: lowconsole_ioctl
  ****************************************************************************/
+
+static int lowconsole_ioctl(struct file *filep, int cmd, unsigned long arg)
+{
+  return -ENOTTY;
+}
+
+/****************************************************************************
+ * Name: lowconsole_read
+ ****************************************************************************/
+
+static ssize_t lowconsole_read(struct file *filep, char *buffer, size_t buflen)
+{
+  return 0;
+}
+
+/****************************************************************************
+ * Name: lowconsole_write
+ ****************************************************************************/
+
+static ssize_t lowconsole_write(struct file *filep, const char *buffer, size_t buflen)
+{
+  ssize_t ret = buflen;
+ 
+  for (; buflen; buflen--)
+    {
+      up_putc(*buffer++);
+    }
+  return ret;
+}
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
 /****************************************************************************
- * Name: mmcsd_slotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
- *
- ****************************************************************************/
+ * Name: lowconsole_init
+****************************************************************************/
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
-
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
-
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
-
-#undef EXTERN
-#if defined(__cplusplus)
+void lowconsole_init(void)
+{
+  (void)register_driver("/dev/console", &g_consoleops, 0666, NULL);
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */

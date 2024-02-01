@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/mmcsd/mmcsd_internal.h
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,18 +33,42 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
+#ifndef __DRIVERS_MMCSD_MMCSD_INTERNAL_H
+#define __DRIVERS_MMCSD_MMCSD_INTERNAL_H
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
+#include <stdint.h>
+#include <debug.h>
 
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
+
+/* Enable excessive debug options */
+
+#undef CONFIG_MMCSD_DUMPALL /* MUST BE DEFINED MANUALLY */
+
+#if !defined(CONFIG_DEBUG_VERBOSE) || !defined(CONFIG_DEBUG_FS)
+#  undef CONFIG_MMCSD_DUMPALL
+#endif
+
+/* Card type */
+
+#define MMCSD_CARDTYPE_UNKNOWN       0  /* Unknown card type */
+#define MMCSD_CARDTYPE_MMC           1  /* Bit 0: MMC card */
+#define MMCSD_CARDTYPE_SDV1          2  /* Bit 1: SD version 1.x */
+#define MMCSD_CARDTYPE_SDV2          4  /* Bit 2: SD version 2.x with byte addressing */
+#define MMCSD_CARDTYPE_BLOCK         8  /* Bit 3: SD version 2.x with block addressing */
+
+#define IS_MMC(t)   (((t) & MMCSD_CARDTYPE_MMC) != 0)
+#define IS_SD(t)    (((t) & (MMCSD_CARDTYPE_SDV1|MMCSD_CARDTYPE_SDV2)) != 0)
+#define IS_SDV1(t)  (((t) & MMCSD_CARDTYPE_SDV1) != 0)
+#define IS_SDV2(t)  (((t) & MMCSD_CARDTYPE_SDV2) != 0)
+#define IS_BLOCK(t) (((t) & MMCSD_CARDTYPE_BLOCK) != 0)
 
 /****************************************************************************
  * Public Types
@@ -62,45 +86,20 @@ extern "C" {
 #define EXTERN extern
 #endif
 
-/****************************************************************************
- * Name: mmcsd_slotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
- *
- ****************************************************************************/
+#ifdef CONFIG_MMCSD_DUMPALL
+#  define mmcsd_dumpbuffer(m,b,l) fvdbgdumpbuffer(m,b,l)
+#else
+#  define mmcsd_dumpbuffer(m,b,l)
+#endif
 
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
-
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
-
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
+#if defined(CONFIG_DEBUG_VERBOSE) && defined(CONFIG_DEBUG_FS)
+EXTERN void mmcsd_dmpcsd(FAR const uint8_t *csd, uint8_t cardtype);
+#else
+#  define mmcsd_dmpcsd(csd,cadtype)
+#endif
 
 #undef EXTERN
 #if defined(__cplusplus)
 }
 #endif
-#endif /* __NUTTX_MMCSD_H */
+#endif /* __DRIVERS_MMCSD_MMCSD_INTERNAL_H */

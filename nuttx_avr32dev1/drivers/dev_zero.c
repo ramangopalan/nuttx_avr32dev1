@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/mmcsd.h
+ * drivers/dev_null.c
  *
  *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,74 +33,95 @@
  *
  ****************************************************************************/
 
-#ifndef __NUTTX_MMCSD_H
-#define __NUTTX_MMCSD_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <sys/types.h>
+#include <stdbool.h>
+#include <string.h>
+#include <poll.h>
+#include <errno.h>
+#include <nuttx/fs.h>
+
 /****************************************************************************
- * Pre-Processor Definitions
+ * Private Function Prototypes
+ ****************************************************************************/
+
+static ssize_t devzero_read(FAR struct file *, FAR char *, size_t);
+static ssize_t devzero_write(FAR struct file *, FAR const char *, size_t);
+#ifndef CONFIG_DISABLE_POLL
+static int     devzero_poll(FAR struct file *filp, FAR struct pollfd *fds,
+                            bool setup);
+#endif
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+static const struct file_operations devzero_fops =
+{
+  0,             /* open */
+  0,             /* close */
+  devzero_read,  /* read */
+  devzero_write, /* write */
+  0,             /* seek */
+  0              /* ioctl */
+#ifndef CONFIG_DISABLE_POLL
+  , devzero_poll /* poll */
+#endif
+};
+
+/****************************************************************************
+ * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Name: devzero_read
  ****************************************************************************/
+
+static ssize_t devzero_read(FAR struct file *filp, FAR char *buffer, size_t len)
+{
+  memset(buffer, 0, len);
+  return len;
+}
+
+/****************************************************************************
+ * Name: devzero_write
+ ****************************************************************************/
+
+static ssize_t devzero_write(FAR struct file *filp, FAR const char *buffer, size_t len)
+{
+  return len;
+}
+
+/****************************************************************************
+ * Name: devzero_poll
+ ****************************************************************************/
+
+#ifndef CONFIG_DISABLE_POLL
+static int devzero_poll(FAR struct file *filp, FAR struct pollfd *fds,
+                        bool setup)
+{
+  if (setup)
+    {
+      fds->revents |= (fds->events & (POLLIN|POLLOUT));
+      if (fds->revents != 0)
+        {
+          sem_post(fds->sem);
+        }
+    }
+  return OK;
+}
+#endif
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-/****************************************************************************
- * Name: mmcsd_slotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   dev - And instance of an MMC/SD interface.  The MMC/SD hardware should
- *     be initialized and ready to use.
- *
- ****************************************************************************/
-
-struct sdio_dev_s; /* See nuttx/sdio.h */
-EXTERN int mmcsd_slotinitialize(int minor, FAR struct sdio_dev_s *dev);
-
-/****************************************************************************
- * Name: mmcsd_spislotinitialize
- *
- * Description:
- *   Initialize one slot for operation using the SPI MMC/SD interface
- *
- * Input Parameters:
- *   minor - The MMC/SD minor device number.  The MMC/SD device will be
- *     registered as /dev/mmcsdN where N is the minor number
- *   slotno - The slot number to use.  This is only meaningful for architectures
- *     that support multiple MMC/SD slots.  This value must be in the range
- *     {0, ..., CONFIG_MMCSD_NSLOTS}.
- *   spi - And instance of an SPI interface obtained by called
- *     up_spiinitialize() with the appropriate port number (see spi.h)
- *
- ****************************************************************************/
-
-struct spi_dev_s; /* See nuttx/spi.h */
-EXTERN int mmcsd_spislotinitialize(int minor, int slotno, FAR struct spi_dev_s *spi);
-
-#undef EXTERN
-#if defined(__cplusplus)
+void devzero_register(void)
+{
+  (void)register_driver("/dev/zero", &devzero_fops, 0666, NULL);
 }
-#endif
-#endif /* __NUTTX_MMCSD_H */

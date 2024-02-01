@@ -416,6 +416,108 @@
     <Compile Include="configs\avr32dev1\src\up_leds.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\bch\bchdev_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchdev_register.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchdev_unregister.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_cache.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_read.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_sem.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_setup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_teardown.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bchlib_write.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\bch\bch_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\can.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\dev_null.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\dev_zero.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\loop.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_csd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_sdio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_sdio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mmcsd\mmcsd_spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mtd\at45db.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mtd\ftl.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mtd\m25px.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mtd\ramtron.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\pipes\fifo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\pipes\pipe.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\pipes\pipe_common.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\pipes\pipe_common.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ramdisk.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\rwbuffer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\serial\lowconsole.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\serial\serial.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\serial\serialirq.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="fs\fat\fs_configfat.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1394,9 +1496,6 @@
     <Compile Include="mm\mm_size2ndx.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mm\mm_test.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="mm\mm_zalloc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -2123,6 +2222,12 @@
     <Folder Include="configs\avr32dev1\ostest\" />
     <Folder Include="configs\avr32dev1\src\" />
     <Folder Include="configs\avr32dev1\tools\" />
+    <Folder Include="drivers\" />
+    <Folder Include="drivers\bch\" />
+    <Folder Include="drivers\mmcsd\" />
+    <Folder Include="drivers\mtd\" />
+    <Folder Include="drivers\pipes\" />
+    <Folder Include="drivers\serial\" />
     <Folder Include="fs\" />
     <Folder Include="fs\fat\" />
     <Folder Include="include\" />
@@ -2195,6 +2300,27 @@
       <SubType>compile</SubType>
     </None>
     <None Include="configs\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\bch\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\Makefile">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\mmcsd\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\mtd\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\pipes\Make.defs">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="drivers\serial\Make.defs">
       <SubType>compile</SubType>
     </None>
     <None Include="fs\fat\Make.defs">
