@@ -40,10 +40,10 @@
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
+#include <nuttx_config.h>
 #include <sys/types.h>
 #include <nxflat.h>
-#include <nuttx/sched.h>
+#include <sched.h>
 
 /****************************************************************************
  * Pre-processor Definitions

@@ -106,11 +106,6 @@
   <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
   <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
   <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
-  <avr32gcc.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>DEBUG</Value>
-    </ListValues>
-  </avr32gcc.compiler.symbols.DefSymbols>
   <avr32gcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
@@ -128,15 +123,16 @@
       <Value>../fs</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
+  <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
   <avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>True</avr32gcc.compiler.optimization.PrepareDataForGarbageCollection>
   <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
   <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
   <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
   <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
-  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing -pipe</avr32gcc.compiler.miscellaneous.OtherFlags>
+  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -fno-pic -fno-strict-aliasing -pipe -isystem ../include/nuttx</avr32gcc.compiler.miscellaneous.OtherFlags>
   <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
-  <avr32gcc.linker.general.DoNotUseDefaultLibraries>True</avr32gcc.linker.general.DoNotUseDefaultLibraries>
+  <avr32gcc.linker.general.NoStartupOrDefaultLibs>True</avr32gcc.linker.general.NoStartupOrDefaultLibs>
   <avr32gcc.linker.libraries.Libraries>
     <ListValues>
       <Value>libm</Value>
@@ -198,6 +194,8 @@
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <BuildTarget>all</BuildTarget>
     <CleanTarget>clean</CleanTarget>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="arch\avr\include\arch.h">
@@ -411,6 +409,45 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="arch\avr\src\common\up_usestack.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_dumpmodule.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_exec.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_execmodule.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_globals.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_internal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_loadmodule.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_register.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_unloadmodule.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\binfmt_unregister.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\symtab_findbyname.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\symtab_findbyvalue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\symtab_findorderedbyname.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="binfmt\symtab_findorderedbyvalue.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="configs\avr32dev1\include\board.h">
@@ -2230,6 +2267,7 @@
     <Folder Include="arch\avr\src\at32uc3\" />
     <Folder Include="arch\avr\src\avr32\" />
     <Folder Include="arch\avr\src\common\" />
+    <Folder Include="binfmt\" />
     <Folder Include="configs\" />
     <Folder Include="configs\avr32dev1\" />
     <Folder Include="configs\avr32dev1\include\" />
@@ -2270,6 +2308,9 @@
       <SubType>compile</SubType>
     </None>
     <None Include="arch\README.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="binfmt\Makefile">
       <SubType>compile</SubType>
     </None>
     <None Include="configs\avr32dev1\nsh\appconfig">

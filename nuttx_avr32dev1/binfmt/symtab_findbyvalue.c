@@ -1,5 +1,5 @@
 /****************************************************************************
- * include/nuttx/symtab.h
+ * binfmt/symtab_findbyvalue.c
  *
  *   Copyright (C) 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <spudmonkey@racsa.co.cr>
@@ -33,89 +33,38 @@
  *
  ****************************************************************************/
 
-#ifndef __INCLUDE_NUTTX_SYMTAB_H
-#define __INCLUDE_NUTTX_SYMTAB_H
-
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx_config.h>
 
+#include <stddef.h>
+#include <debug.h>
+#include <assert.h>
+#include <errno.h>
+
+#include <nuttx/symtab.h>
+
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Public Types
+ * Private Function Prototypes
  ****************************************************************************/
 
-/* struct symbtab_s describes one entry in the symbol table.  A symbol table
- * is a fixed size array of struct symtab_s.  The information is intentionally
- * minimal and supports only:
- *
- * 1. Function points as sym_values.  Of other kinds of values need to be
- *    supported, then typing information would also need to be included in
- *    the structure.
- *
- * 2. Fixed size arrays.  There is no explicit provisional for dyanamically
- *    adding or removing entries from the symbol table (realloc might be
- *    used for that purpose if needed).  The intention is to support only
- *    fixed size arrays completely defined at compilation or link time.
- */
-
-struct symtab_s
-{
-  FAR const char *sym_name;          /* A pointer to the symbol name string */
-  FAR const void *sym_value;         /* The value associated witht the string */
-};
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
 
 /****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/***********************************************************************
  * Public Functions
- ****************************************************************************/
-
-#undef EXTERN
-#if defined(__cplusplus)
-#define EXTERN extern "C"
-extern "C" {
-#else
-#define EXTERN extern
-#endif
-
-/****************************************************************************
- * Name: symtab_findbyname
- *
- * Description:
- *   Find the symbol in the symbol table with the matching name.
- *   This version assumes that table is not ordered with respect to symbol
- *   name and, hence, access time will be linear with respect to nsyms.
- *
- * Returned Value:
- *   A reference to the symbol table entry if an entry with the matching
- *   name is found; NULL is returned if the entry is not found.
- *
- ****************************************************************************/
-
-EXTERN FAR const struct symtab_s *
-symtab_findbyname(FAR const struct symtab_s *symtab,
-                  FAR const char *name, int nsyms);
-
-/****************************************************************************
- * Name: symtab_findorderedbyname
- *
- * Description:
- *   Find the symbol in the symbol table with the matching name.
- *   This version assumes that table ordered with respect to symbol name.
- *
- * Returned Value:
- *   A reference to the symbol table entry if an entry with the matching
- *   name is found; NULL is returned if the entry is not found.
- *
- ****************************************************************************/
-
-EXTERN FAR const struct symtab_s *
-symtab_findorderedbyname(FAR const struct symtab_s *symtab,
-                         FAR const char *name, int nsyms);
+ ***********************************************************************/
 
 /****************************************************************************
  * Name: symtab_findbyvalue
@@ -132,32 +81,41 @@ symtab_findorderedbyname(FAR const struct symtab_s *symtab,
  *
  ****************************************************************************/
 
-EXTERN FAR const struct symtab_s *
+FAR const struct symtab_s *
 symtab_findbyvalue(FAR const struct symtab_s *symtab,
-                   FAR void *value, int nsyms);
+                   FAR void *value, int nsyms)
+{
+  FAR const struct symtab_s *retval = NULL;
 
-/****************************************************************************
- * Name: symtab_findorderedbyvalue
- *
- * Description:
- *   Find the symbol in the symbol table whose value closest (but not greater
- *   than), the provided value. This version assumes that table is ordered
- *   with respect to symbol name.
- *
- * Returned Value:
- *   A reference to the symbol table entry if an entry with the matching
- *   name is found; NULL is returned if the entry is not found.
- *
- ****************************************************************************/
+  DEBUGASSERT(symtab != NULL);
+  for (; nsyms > 0; symtab++, nsyms--)
+    {
+      /* Look for symbols of lesser or equal value (probably address) to value */
 
-EXTERN FAR const struct symtab_s *
-symtab_findorderedbyvalue(FAR const struct symtab_s *symtab,
-                          FAR void *value, int nsyms);
+      if (symtab->sym_value <= value)
+        {
+          /* Found one.  Is it the largest we have found so far? */
 
-#undef EXTERN
-#if defined(__cplusplus)
+          if (!retval || symtab->sym_value > retval->sym_value)
+            {
+              /* Yes, then it is the new candidate for the symbol whose value
+               * just below 'value'
+               */
+
+              retval = symtab;
+
+              /* If it is exactly equal to the search 'value', then we might as
+               * well terminate early because we can't do any better than that.
+               */
+
+              if (retval->sym_value == value)
+                {
+                  break;
+                }
+            }
+        }
+    }
+
+  return retval;
 }
-#endif
-
-#endif /* __INCLUDE_NUTTX_SYMTAB_H */
 
