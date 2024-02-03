@@ -52,8 +52,8 @@
  ****************************************************************************/
 
 FAR char *optarg; /* Optional argument following option */
-int optind = 1;   /* Index into argv */
-int optopt = '?'; /* unrecognized option character */
+//int optind = 1;   /* Index into argv */
+//int optopt = '?'; /* unrecognized option character */
 
 /****************************************************************************
  * Private Variables
@@ -111,7 +111,7 @@ static bool      g_binitialized = false;
  *
  ****************************************************************************/
 
-int getopt(int argc, FAR char *const argv[], FAR const char *optstring)
+int getopt_(int argc, FAR char *const argv[], FAR const char *optstring)
 {
   if (argv && optstring && argc > 1)
     {

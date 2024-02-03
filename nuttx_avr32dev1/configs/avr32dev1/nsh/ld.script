@@ -47,7 +47,7 @@ ENTRY(_stext)
 
 MEMORY
 {
-    flash (rxai!w)  : ORIGIN = 0x80002000, LENGTH = 256K - 8K
+    flash (rxai!w)  : ORIGIN = 0x80000000, LENGTH = 256K
     intram (wxa!ri) : ORIGIN = 0x00000004, LENGTH = 32K
     userpage        : ORIGIN = 0x80800000, LENGTH = 512
     factorypage     : ORIGIN = 0x80800200, LENGTH = 512
