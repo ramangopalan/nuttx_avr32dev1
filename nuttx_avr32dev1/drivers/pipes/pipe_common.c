@@ -54,7 +54,7 @@
 
 #include <nuttx/fs.h>
 #if CONFIG_DEBUG
-#  include <nuttx/arch.h>
+#  include <nuttx_arch.h>
 #endif
 
 #include "pipe_common.h"

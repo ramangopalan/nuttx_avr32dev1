@@ -102,86 +102,86 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <Avr32Gcc>
-  <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
-  <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
-  <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
-  <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
-  <avr32gcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-      <Value>../include</Value>
-      <Value>../arch/avr/src/at32uc3</Value>
-      <Value>../include/nuttx</Value>
-      <Value>../include/apps</Value>
-      <Value>../fs</Value>
-    </ListValues>
-  </avr32gcc.compiler.directories.IncludePaths>
-  <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
-  <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
-  <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
-  <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
-  <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -muse-rodata-section -pipe -isystem ../include/nuttx</avr32gcc.compiler.miscellaneous.OtherFlags>
-  <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
-  <avr32gcc.linker.general.DoNotUseDefaultLibraries>True</avr32gcc.linker.general.DoNotUseDefaultLibraries>
-  <avr32gcc.linker.libraries.Libraries>
-    <ListValues>
-      <Value>libm</Value>
-      <Value>libgcc</Value>
-      <Value>libc</Value>
-    </ListValues>
-  </avr32gcc.linker.libraries.Libraries>
-  <avr32gcc.linker.libraries.LibrarySearchPaths>
-    <ListValues>
-      <Value>../configs/avr32dev1/nsh</Value>
-    </ListValues>
-  </avr32gcc.linker.libraries.LibrarySearchPaths>
-  <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
-  <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
-  <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
-  <avr32gcc.linker.miscellaneous.LinkerFlags>-T ld.script -e __start</avr32gcc.linker.miscellaneous.LinkerFlags>
-  <avr32gcc.assembler.general.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-    </ListValues>
-  </avr32gcc.assembler.general.IncludePaths>
-  <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
-  <avr32gcc.preprocessingassembler.general.AssemblerFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.preprocessingassembler.general.AssemblerFlags>
-  <avr32gcc.preprocessingassembler.general.IncludePaths>
-    <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
-      <Value>../configs/avr32dev1/include</Value>
-      <Value>../arch/avr/include</Value>
-      <Value>../arch/avr/include/at32uc3</Value>
-      <Value>../arch/avr/include/avr32</Value>
-      <Value>../arch/avr/src/common</Value>
-      <Value>../include/sys</Value>
-      <Value>../sched</Value>
-      <Value>../include</Value>
-      <Value>../arch/avr/src/at32uc3</Value>
-      <Value>../include/nuttx</Value>
-    </ListValues>
-  </avr32gcc.preprocessingassembler.general.IncludePaths>
-  <avr32gcc.preprocessingassembler.symbols.DefSymbols>
-    <ListValues>
-      <Value>__ASSEMBLY__</Value>
-    </ListValues>
-  </avr32gcc.preprocessingassembler.symbols.DefSymbols>
-  <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
-</Avr32Gcc>
+        <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
+        <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
+        <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
+        <avr32gcc.common.outputfiles.srec>True</avr32gcc.common.outputfiles.srec>
+        <avr32gcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+            <Value>../include</Value>
+            <Value>../arch/avr/src/at32uc3</Value>
+            <Value>../include/nuttx</Value>
+            <Value>../include/apps</Value>
+            <Value>../fs</Value>
+          </ListValues>
+        </avr32gcc.compiler.directories.IncludePaths>
+        <avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>True</avr32gcc.compiler.optimization.UseSectionRoDataForReadOnlyData>
+        <avr32gcc.compiler.optimization.DebugLevel>Maximum (-g3)</avr32gcc.compiler.optimization.DebugLevel>
+        <avr32gcc.compiler.warnings.AllWarnings>True</avr32gcc.compiler.warnings.AllWarnings>
+        <avr32gcc.compiler.warnings.Undefined>True</avr32gcc.compiler.warnings.Undefined>
+        <avr32gcc.compiler.miscellaneous.OtherFlags>-fno-builtin -muse-rodata-section -pipe -isystem ../include/nuttx</avr32gcc.compiler.miscellaneous.OtherFlags>
+        <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
+        <avr32gcc.linker.general.DoNotUseDefaultLibraries>True</avr32gcc.linker.general.DoNotUseDefaultLibraries>
+        <avr32gcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+            <Value>libgcc</Value>
+            <Value>libc</Value>
+          </ListValues>
+        </avr32gcc.linker.libraries.Libraries>
+        <avr32gcc.linker.libraries.LibrarySearchPaths>
+          <ListValues>
+            <Value>../configs/avr32dev1/nsh</Value>
+          </ListValues>
+        </avr32gcc.linker.libraries.LibrarySearchPaths>
+        <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
+        <avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>True</avr32gcc.linker.optimization.PutReadOnlyDataInWritableDataSection>
+        <avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>True</avr32gcc.linker.optimization.AllowDirectReferencesToDataSection>
+        <avr32gcc.linker.miscellaneous.LinkerFlags>-T ld.script -e __start</avr32gcc.linker.miscellaneous.LinkerFlags>
+        <avr32gcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+          </ListValues>
+        </avr32gcc.assembler.general.IncludePaths>
+        <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
+        <avr32gcc.preprocessingassembler.general.AssemblerFlags>-fno-builtin -fno-pic -fno-strict-aliasing</avr32gcc.preprocessingassembler.general.AssemblerFlags>
+        <avr32gcc.preprocessingassembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\UC3B_DFP\1.0.29\include\AT32UC3B0256</Value>
+            <Value>../configs/avr32dev1/include</Value>
+            <Value>../arch/avr/include</Value>
+            <Value>../arch/avr/include/at32uc3</Value>
+            <Value>../arch/avr/include/avr32</Value>
+            <Value>../arch/avr/src/common</Value>
+            <Value>../include/sys</Value>
+            <Value>../sched</Value>
+            <Value>../include</Value>
+            <Value>../arch/avr/src/at32uc3</Value>
+            <Value>../include/nuttx</Value>
+          </ListValues>
+        </avr32gcc.preprocessingassembler.general.IncludePaths>
+        <avr32gcc.preprocessingassembler.symbols.DefSymbols>
+          <ListValues>
+            <Value>__ASSEMBLY__</Value>
+          </ListValues>
+        </avr32gcc.preprocessingassembler.symbols.DefSymbols>
+        <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
+      </Avr32Gcc>
     </ToolchainSettings>
     <UsesExternalMakeFile>False</UsesExternalMakeFile>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
@@ -2247,6 +2247,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sched\work_thread.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="trampoline.S">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

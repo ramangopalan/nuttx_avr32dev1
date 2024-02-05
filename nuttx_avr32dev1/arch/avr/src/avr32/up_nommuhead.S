@@ -70,7 +70,9 @@
 /* The following entry point must be linked to execute at 0x80000000 if it
  * is to execute upon reset.
  */
-	.text
+    .section  .start, "ax", @progbits
+
+	/* .text */
 	.global 	__start
 	.type		__start, @function
 __start:
