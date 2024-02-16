@@ -53,6 +53,11 @@
 #include "at32uc3_usart.h"
 #include "at32uc3_pinmux.h"
 
+#include <avr32/io.h>
+#include "usart_.h"
+#include "gpio_.h"
+#include "board_.h"
+
 /******************************************************************************
  * Private Definitions
  ******************************************************************************/
@@ -223,6 +228,40 @@ void usart_reset(uintptr_t usart_base)
 }
 #endif
 
+const uint32_t uart_base_addr[] = {
+	AVR32_USART0_ADDRESS,
+	AVR32_USART1_ADDRESS,
+	AVR32_USART2_ADDRESS,
+	#ifdef AVR32_USART3_ADDRESS
+	AVR32_USART3_ADDRESS,
+	#endif
+};
+
+static const gpio_map_t uart_pins =
+{
+	// UART 0
+	{ AVR32_USART0_RXD_0_0_PIN, AVR32_USART0_RXD_0_0_FUNCTION },
+	{ AVR32_USART0_TXD_0_0_PIN, AVR32_USART0_TXD_0_0_FUNCTION },
+
+	// UART 1
+	{ AVR32_USART1_RXD_0_0_PIN, AVR32_USART1_RXD_0_0_FUNCTION },
+	{ AVR32_USART1_TXD_0_0_PIN, AVR32_USART1_TXD_0_0_FUNCTION },
+
+	#if NUM_UART > 2
+
+	// UART 2
+	{ AVR32_USART2_RXD_0_0_PIN, AVR32_USART2_RXD_0_0_FUNCTION },
+	{ AVR32_USART2_TXD_0_0_PIN, AVR32_USART2_TXD_0_0_FUNCTION },
+
+	#ifdef AVR32_USART3_ADDRESS
+	// UART 3
+	{ AVR32_USART3_RXD_0_0_PIN, AVR32_USART3_RXD_0_0_FUNCTION },
+	{ AVR32_USART3_TXD_0_0_PIN, AVR32_USART3_TXD_0_0_FUNCTION },
+	#endif
+
+	#endif
+};
+
 /******************************************************************************
  * Name: usart_configure
  *
@@ -235,16 +274,16 @@ void usart_reset(uintptr_t usart_base)
 void usart_configure(uintptr_t usart_base, uint32_t baud, unsigned int parity,
                      unsigned int nbits, bool stop2)
 {
-  uint32_t regval;
+  int id = 1;
+  volatile avr32_usart_t *pusart = ( volatile avr32_usart_t* )uart_base_addr[ id ];
+  usart_options_t opts;
 
-  /* Reset the USART and disable RX and TX */
-
-  usart_reset(usart_base);
+  opts.channelmode = USART_NORMAL_CHMODE;
+  opts.charlength = nbits;
+  opts.baudrate = baud;
 
   /* Configure STOP bits */
-
-  regval  = USART_MR_MODE_NORMAL|USART_MR_CHMODE_NORMAL;  /* Normal RS-232 mode */
-  regval |= stop2 ? USART_MR_NBSTOP_2 : USART_MR_NBSTOP_1;
+  opts.stopbits = stop2 ? USART_2_STOPBITS : USART_1_STOPBIT;
 
   /* Configure parity */
 
@@ -252,41 +291,24 @@ void usart_configure(uintptr_t usart_base, uint32_t baud, unsigned int parity,
     {
       case 0:
       default:
-        regval |= USART_MR_PAR_NONE;
+        opts.paritytype = USART_NO_PARITY;
         break;
 
       case 1:
-        regval |= USART_MR_PAR_ODD;
+        opts.paritytype = USART_ODD_PARITY;
         break;
 
       case 2:
-        regval |= USART_MR_PAR_EVEN;
+        opts.paritytype = USART_EVEN_PARITY;
         break;
     }
 
-  /* Configure the number of bits per word */
+	// Set actual interface
+	gpio_enable_module(uart_pins + id * 2, 2 );
+	usart_init_rs232(pusart, &opts, REQ_PBA_FREQ);
 
-  DEBUGASSERT(nbits >= 5 && nbits <= 9);
-  if (nbits == 9)
-    {
-      regval |= USART_MR_MODE9;
-    }
-  else
-    {
-      regval |= USART_MR_CHRL_BITS(nbits);
-    }
-  
-  usart_putreg(usart_base, AVR32_USART_MR_OFFSET, regval);
-
-  /* Set the baud rate generation register */
-
-  usart_setbaudrate(usart_base, baud);
-
-  /* Enable RX and TX */
-
-  regval = usart_getreg(usart_base, AVR32_USART_CR_OFFSET);
-  regval |= (USART_CR_RXEN|USART_CR_TXEN);
-  usart_putreg(usart_base, AVR32_USART_CR_OFFSET, regval);
+	// Return actual baud here
+	usart_get_async_baudrate(pusart, REQ_PBA_FREQ);
 }
 #endif
 

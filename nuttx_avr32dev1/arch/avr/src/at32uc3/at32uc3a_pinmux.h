@@ -46,7 +46,8 @@
  * Pre-processor Definitions
  ************************************************************************************/
 
-#warning "Not Implemented"
+#define PINMUX_USART1_RXD_1        (GPIO_PERIPH | GPIO_FUNCA | GPIO_PORTA | 5)
+#define PINMUX_USART1_TXD_1        (GPIO_PERIPH | GPIO_FUNCA | GPIO_PORTA | 6)
 
 /************************************************************************************
  * Public Types

@@ -42,6 +42,14 @@
 #include "at32uc3_config.h"
 #include "up_internal.h"
 #include "at32uc3_internal.h"
+#include "board_.h"
+#include <avr32/io.h>
+#include "compiler_.h"
+#include "pm_.h"
+#include "usart_.h"
+#include "gpio_.h"
+#include "flashc_.h"
+// Raman: #include "intc_.h"
 
 /**************************************************************************
  * Private Definitions
@@ -86,6 +94,20 @@ void up_lowinit(void)
   /* Initialize MCU clocking */
 
   up_clkinitialize();
+
+  // Disable_global_interrupt();
+  // INTC_init_interrupts();
+  
+   pm_freq_param_t pm_freq_param =
+   {
+	   REQ_CPU_FREQ,
+	   REQ_PBA_FREQ,
+	   FOSC0,
+	   OSC0_STARTUP,
+   };
+
+  // Setup clocks
+  // pm_configure_clocks(&pm_freq_param);
 
   /* Initialize a console (probably a serial console) */
 

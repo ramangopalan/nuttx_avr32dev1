@@ -52,10 +52,27 @@
 /* UC3 A2/A3 Series */
 
 /* UC3 B0 (64-pin) / B1 (48-pin, no USB host) Series */
-
-#if CONFIG_ARCH_CHIP_AT32UC3B0256
-#  define CONFIG_ARCH_CHIP_AT32UC3B  1            /* UC3 B series */
-#  define CONFIG_ARCH_CHIP_AT32UC3B0 1            /* UC3 B0 (64-pin) series */
+#if defined (CONFIG_ARCH_CHIP_AT32UC3A0512)
+#  define CONFIG_ARCH_CHIP_AT32UC3A  1            /* UC3 B series */
+#  define CONFIG_ARCH_CHIP_AT32UC3A0 1            /* UC3 B0 (64-pin) series */
+#  define AVR32_ONCHIP_FLASH_SIZE    (256*1024)   /* Size of on-chip FLASH (bytes) */
+#  define AVR32_ONCHIP_SRAM_SIZE     (64*1024)    /* Size of on-chip SRAM (bytes) */
+#  define AVR32_USB_FULLSPEED        1            /* USB full-speed support */
+#  define AVR32_USB_HOST             1            /* USB host support (OTG) */
+#  define AVR32_USB_DEVICE           1            /* USB device support */
+#  define AVR32_NUSART               3            /* Number of USARTs */
+#  define AVR32_NSPI                 2            /* Number of SPI */
+#  define AVR32_NTWI                 1            /* Number of TWI (I2C) */
+#  define AVR32_NSSC                 1            /* Number of SSC (I2S audio) */
+#  define AVR32_NGPIO                44           /* Number of GPIO pins */
+#  define AVR32_NTIMER               3            /* Number of Timers */
+#  define AVR32_NPWM                 13           /* Number of PWM channels */
+#  define AVR32_NOSC                 2            /* Number of crystal oscillators */
+#  define AVR32_NADC10               8            /* Number of 10-bit A/D channels */
+#  define AVR32_NDMAC                7            /* Number of DMA channels */
+#elif defined (CONFIG_ARCH_CHIP_AT32UC3B0256)
+#  define CONFIG_ARCH_CHIP_AT32UC3B  0            /* UC3 B series */
+#  define CONFIG_ARCH_CHIP_AT32UC3B0 0            /* UC3 B0 (64-pin) series */
 #  define AVR32_ONCHIP_FLASH_SIZE    (256*1024)   /* Size of on-chip FLASH (bytes) */
 #  define AVR32_ONCHIP_SRAM_SIZE     (32*1024)    /* Size of on-chip SRAM (bytes) */
 #  define AVR32_USB_FULLSPEED        1            /* USB full-speed support */

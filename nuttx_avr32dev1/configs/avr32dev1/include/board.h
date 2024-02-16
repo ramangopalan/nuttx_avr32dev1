@@ -57,7 +57,7 @@
 
 /* The RCOSC frequency needs to be calibrated! */
 
-#define AVR32_FRCOSC         115000     /* RCOSC frequency in Hz. 115KHz nominal */
+#define AVR32_FRCOSC         115200     /* RCOSC frequency in Hz. 115KHz nominal */
 
 #define AVR32_FOSC32         32768      /* OSC32 frequency in Hz */
 #define AVR32_OSC32STARTUP   3          /* OSC32 startup time in RCOSC periods */
@@ -88,11 +88,11 @@
 
 #define AVR32_CLOCK_PLL0_OSC0 1
 #undef AVR32_CLOCK_PLL0_OSC1
-#define AVR32_PLL0_MUL        15
+#define AVR32_PLL0_MUL        10
 #define AVR32_PLL0_DIV        1
 #define AVR32_PLL0_DIV2       1
 #define AVR32_PLL0_WBWM       0
-#define AVR32_PLL0_FREQ       192000000
+#define AVR32_PLL0_FREQ       132000000
 
 /* Set PLL1 @ 96 MHz from OSC0: 12MHz*(7+1)/1 = 96MHz */
 
@@ -108,7 +108,7 @@
 
 #define AVR32_CKSEL_CPUDIV    0
 #define AVR32_CKSEL_HSBDIV    0
-#define AVR32_CKSEL_PBADIV    0
+#define AVR32_CKSEL_PBADIV    1
 #define AVR32_CKSEL_PBBDIV    0
 
 /* GCLK_USBB */
@@ -129,17 +129,17 @@
 
 #define AVR32_CLOCK_OSC0      1
 #undef  AVR32_CLOCK_OSC1          /* Not supported */
-#undef  AVR32_CLOCK_OSC32         /* Not populated */
-#undef  AVR32_CLOCK_PLL0
+#undef  AVR32_CLOCK_OSC32         /* Not supported */
+#define AVR32_CLOCK_PLL0
 #undef  AVR32_CLOCK_PLL1
 
-#define AVR32_CPU_CLOCK       AVR32_FOSC0
-#define AVR32_PBA_CLOCK       AVR32_FOSC0
-
+#define AVR32_CPU_CLOCK       66000000
+#define AVR32_PBA_CLOCK       16500000
+                              //12000000 
 /* Pin muliplexing selecion *********************************************************/
 
-#define PINMUX_USART1_RXD     PINMUX_USART1_RXD_2
-#define PINMUX_USART1_TXD     PINMUX_USART1_TXD_2
+#define PINMUX_USART1_RXD     PINMUX_USART1_RXD_1
+#define PINMUX_USART1_TXD     PINMUX_USART1_TXD_1
 
 /* LED definitions ******************************************************************/
 /* The AVR32DEV1 board has 3 LEDs, two of which can be controlled through GPIO pins */
